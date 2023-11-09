@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "cstdlib": "c",
+        "window.h": "c",
+        "glad.h": "c"
+    }
+}
