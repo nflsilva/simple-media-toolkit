@@ -1,6 +1,7 @@
 #include "smt/window.h"
 
-int smtOpenWindow(int width, int height, const char *title) {
+int smtOpenWindow(int width, int height, const char* title) 
+{
 
     if (!glfwInit())
     {
@@ -9,29 +10,34 @@ int smtOpenWindow(int width, int height, const char *title) {
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    window = glfwCreateWindow(width, height, title, NULL, NULL);
-    if (!window)
+    smlWindow = glfwCreateWindow(width, height, title, NULL, NULL);
+    if (!smlWindow)
     {
         glfwTerminate();
         return SMT_FAILURE;
     }
 
-    glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(smlWindow);
     gladLoadGL();
     glfwSwapInterval(1);
+
+    return SMT_SUCCESS;
 }
 
-int smtWindowShouldClose() {
-    if(!window || glfwWindowShouldClose(window) == GLFW_TRUE) return SMT_TRUE;
+int smtWindowShouldClose() 
+{
+    if(!smlWindow || glfwWindowShouldClose(smlWindow) == GLFW_TRUE) return SMT_TRUE;
     return SMT_FALSE;
 }
 
-void smtCloseWindow() {
-    if(!window) return;
-    glfwDestroyWindow(window);
+void smtCloseWindow() 
+{
+    if(!smlWindow) return;
+    glfwDestroyWindow(smlWindow);
 }
 
-void smtUpdateWindow() {
-    glfwSwapBuffers(window);
+void smtUpdateWindow() 
+{
+    glfwSwapBuffers(smlWindow);
     glfwPollEvents();
 }

@@ -2,6 +2,22 @@
     "files.associations": {
         "cstdlib": "c",
         "window.h": "c",
-        "glad.h": "c"
+        "glad.h": "c",
+        "keyboard.h": "c",
+        "*.tcc": "c",
+        "deque": "c",
+        "list": "c",
+        "string": "c",
+        "unordered_map": "c",
+        "unordered_set": "c",
+        "vector": "c",
+        "assert.h": "c",
+        "list.h": "c",
+        "stdlib.h": "c",
+        "array": "c",
+        "string_view": "c",
+        "span": "c",
+        "hashtable.h": "c",
+        "stdio.h": "c"
     }
 }

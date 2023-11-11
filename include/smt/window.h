@@ -6,17 +6,17 @@
 #include <GLFW/glfw3.h>
 #include "smt/smt.h"
 
-GLFWwindow* window = NULL;
+GLFWwindow* smlWindow = NULL;
 
 /*!
  *  Opens the application window with a valid OpenGL context.
  * @param width The window width to set.
  * @param height The window height to set.
  * @param title The window height to set.
- * @returns `SMT_SUCCESS` if successfull. `SMT_FALSE` if an error occurred
+ * @returns `SMT_SUCCESS` if successfull. `SMT_FAILURE` if an error occurred
  * or the window is already opened.
  */
-int smtOpenWindow(int width, int height, const char *title);
+int smtOpenWindow(int width, int height, const char* title);
 
 /*!
  *  Indicates if the applicatin window will close.
