@@ -1,5 +1,5 @@
-#ifndef _HASHTABLE_H
-#define _HASHTABLE_H
+#ifndef _CUTIL_HASHTABLE_H
+#define _CUTIL_HASHTABLE_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,17 +9,28 @@
 
 #define _CUTIL_TABLE_SIZE 50000
 
+/*!
+ * Stores the hash table bucket item context.
+ * @param key The key for this item 
+ * @param key The data for this item
+ */
 typedef struct CUTILHashTableBucketChainNode {
     const char* key;
     void* data;
 } CUTILHashTableBucketChainNode;
 
+/*!
+ * Stores the hash table bucket context.
+ * @param chain A list of nodes which contain the various key collisions
+ */
 typedef struct CUTILHashTableBucket {
-    const char* key;
-    void* data;
     CUTILList* chain;
 } CUTILHashTableBucket;
 
+/*!
+ * Stores the hash table context.
+ * @param buckets An array of buckets
+ */
 typedef struct CUTILHashTable {
     CUTILHashTableBucket* buckets;
 } CUTILHashTable;

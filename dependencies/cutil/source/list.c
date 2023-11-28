@@ -27,7 +27,7 @@ void cutilListDestroy(CUTILList* list, int cleanData)
 
 void cutilListAppendElement(CUTILList* list, void* data)
 {
-    if (!list) return;
+    if(!list) return;
 
     CUTILListNode* newNode = (CUTILListNode*)malloc(sizeof(CUTILListNode));
     newNode->data = data;
@@ -41,7 +41,7 @@ void cutilListAppendElement(CUTILList* list, void* data)
 
 void* cutilListGetElement(CUTILList* list, int index) 
 {
-    if (!list || list->size == 0 || index < 0 || index >= list->size ) return NULL;
+    if(!list || list->size == 0 || index < 0 || index >= list->size ) return NULL;
 
     CUTILListNode* selectedElement = list->head;
     for(int i = 0; i != index; i++) 
@@ -51,7 +51,9 @@ void* cutilListGetElement(CUTILList* list, int index)
 
 void* cutilListRemoveElement(CUTILList* list, int index)
 {
-    if (!list || list->size == 0 || index < 0 || index >= list->size ) return NULL;
+    if(!list || list->size == 0 || index < 0 || index >= list->size ) return NULL;
+
+    if(index == 0) return cutilListPopElement(list);
 
     CUTILListNode* currentElement = list->head;
     for(int i = 0; i != index - 1; i++) 
@@ -68,7 +70,7 @@ void* cutilListRemoveElement(CUTILList* list, int index)
 
 void cutilListPushElement(CUTILList* list, void* data)
 {
-    if (!list) return;
+    if(!list) return;
 
     CUTILListNode* newNode = (CUTILListNode*)malloc(sizeof(CUTILListNode));
     newNode->data = data;
@@ -81,7 +83,7 @@ void cutilListPushElement(CUTILList* list, void* data)
 
 void* cutilListPopElement(CUTILList* list) 
 {
-    if (!list || list->size == 0) return NULL;
+    if(!list || list->size == 0) return NULL;
 
     CUTILListNode* removingElement = list->head;
     list->head = removingElement->next;

@@ -1,10 +1,19 @@
 #include "smt/window.h"
 
-int smtOpenWindow(int width, int height, const char* title) 
+static GLFWwindow* smlWindow = NULL;
+
+static void error_callback(int error, const char* description)
 {
+    printf("Error: %s\n", description);
+}
+
+int smtWindowOpen(int width, int height, const char* title) 
+{
+    glfwSetErrorCallback(error_callback);
 
     if (!glfwInit())
     {
+        smtSetErrorMessage("");
         return SMT_FAILURE;
     }
 
@@ -14,6 +23,7 @@ int smtOpenWindow(int width, int height, const char* title)
     if (!smlWindow)
     {
         glfwTerminate();
+        smtSetErrorMessage("");
         return SMT_FAILURE;
     }
 
@@ -30,13 +40,13 @@ int smtWindowShouldClose()
     return SMT_FALSE;
 }
 
-void smtCloseWindow() 
+void smtWindowClose() 
 {
     if(!smlWindow) return;
     glfwDestroyWindow(smlWindow);
 }
 
-void smtUpdateWindow() 
+void smtWindowUpdate() 
 {
     glfwSwapBuffers(smlWindow);
     glfwPollEvents();

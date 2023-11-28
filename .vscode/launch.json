@@ -8,7 +8,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "debug list tests",
-            "program": "${workspaceFolder}/dependencies/cutil/build/tests/listTests",
+            "program": "${workspaceFolder}/build/dependencies/cutil/tests/listTests",
             "args": [],
             "cwd": "${workspaceFolder}"
         },
@@ -16,7 +16,31 @@
             "type": "lldb",
             "request": "launch",
             "name": "debug hash table tests",
-            "program": "${workspaceFolder}/dependencies/cutil/build/tests/hashTableTests",
+            "program": "${workspaceFolder}/build/dependencies/cutil/tests/hashTableTests",
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "debug filesystem tests",
+            "program": "${workspaceFolder}/build/dependencies/cutil/tests/filesystemTests",
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "debug math tests",
+            "program": "${workspaceFolder}/build/dependencies/cutil/tests/mathTests",
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "debug startup tests",
+            "program": "${workspaceFolder}/build/tests/startupTests",
             "args": [],
             "cwd": "${workspaceFolder}"
         }

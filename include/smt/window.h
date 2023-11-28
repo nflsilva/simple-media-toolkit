@@ -1,12 +1,10 @@
-#ifndef _WINDOW_H
-#define _WINDOW_H
+#ifndef _SMT_WINDOW_H
+#define _SMT_WINDOW_H
 
 #include <stdlib.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "smt/smt.h"
-
-GLFWwindow* smlWindow = NULL;
 
 /*!
  *  Opens the application window with a valid OpenGL context.
@@ -16,7 +14,7 @@ GLFWwindow* smlWindow = NULL;
  * @returns `SMT_SUCCESS` if successfull. `SMT_FAILURE` if an error occurred
  * or the window is already opened.
  */
-int smtOpenWindow(int width, int height, const char* title);
+int smtWindowOpen(int width, int height, const char* title);
 
 /*!
  *  Indicates if the applicatin window will close.
@@ -27,11 +25,11 @@ int smtWindowShouldClose();
 /*!
  *  Destroys window context.
  */
-void smtCloseWindow();
+void smtWindowClose();
 
 /*!
  *  Updates window context.
  */
-void smtUpdateWindow();
+void smtWindowUpdate();
 
 #endif

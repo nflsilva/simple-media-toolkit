@@ -1,7 +1,8 @@
-#include <stdlib.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #include "cutil/list.h"
+
 #define LIST_SIZE 10
 
 int main() 
@@ -35,8 +36,7 @@ int main()
     assert(*(int*)cutilListPopElement(list) == elements[5]);
     assert(list->size == LIST_SIZE - 2);
 
-    // destroy
+    // cleanup
     cutilListDestroy(list, 0);
-
     exit(EXIT_SUCCESS);
 }

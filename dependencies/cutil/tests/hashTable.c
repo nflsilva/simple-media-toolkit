@@ -1,5 +1,5 @@
-#include <stdlib.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #include "cutil/hashTable.h"
 
@@ -18,6 +18,10 @@ int main()
     cutilHashTableAddElement(table, "bca", &elements[1]);
     cutilHashTableAddElement(table, "cab", &elements[2]);
 
+    // test remove
+    assert(*(int*)cutilHashTableRemoveElement(table, "abc") == elements[0]);
+    assert(cutilHashTableRemoveElement(table, "abc") == NULL);
+
     // test insert
     assert(*(int*)cutilHashTableGetElement(table, "bca") == elements[1]);
     assert(*(int*)cutilHashTableGetElement(table, "cab") == elements[2]);
@@ -27,9 +31,7 @@ int main()
     cutilHashTableAddElement(table, "cab", &elements[0]);
     assert(*(int*)cutilHashTableGetElement(table, "cab") == elements[0]);
 
-    // test remove
-    assert(*(int*)cutilHashTableRemoveElement(table, "abc") == elements[0]);
-    assert(cutilHashTableRemoveElement(table, "abc") == NULL);
-
+    // cleanup
+    cutilHashTableDestroy(table, 1);
     exit(EXIT_SUCCESS);
 }

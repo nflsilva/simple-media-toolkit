@@ -2,30 +2,41 @@ cmake_minimum_required(VERSION 3.26.4)
 
 set(TARGET_NAME smt)
 project(${TARGET_NAME})
-
 add_compile_options(-Wall -Wextra)
-file(GLOB_RECURSE SRC_FILES source/*.c)
-add_library(${TARGET_NAME} ${SRC_FILES})
 
-add_subdirectory(dependencies/cutil)
-include_directories(dependencies/cutil/include)
-
-add_subdirectory(dependencies/yavec2)
-include_directories(dependencies/yavec2/include)
-
-find_package(OpenGL REQUIRED)
-include_directories(${OPENGL_INCLUDE_DIRS})
-target_link_libraries(${TARGET_NAME} ${OPENGL_LIBRARIES})
+file(GLOB_RECURSE SMT_SOURCES source/*.c)
+add_library(${TARGET_NAME} STATIC ${SMT_SOURCES})
 
 set(GLFW_BUILD_EXAMPLES false)
 set(GLFW_BUILD_TESTS false)
-add_subdirectory(dependencies/glfw)
-include_directories(dependencies/glfw/include)
-target_link_libraries(${TARGET_NAME} glfw)
+find_package(OpenGL REQUIRED)
 
 add_subdirectory(dependencies/glad)
-include_directories(dependencies/glad/include)
-target_link_libraries(${TARGET_NAME} glad)
+add_subdirectory(dependencies/glfw)
+add_subdirectory(dependencies/cutil)
+add_subdirectory(dependencies/cvec)
 
-target_link_libraries(${TARGET_NAME} yavec2)
-target_include_directories(${TARGET_NAME} PUBLIC include)
+set(
+    SMT_INCLUDE_DIRS
+    include
+    ${OPENGL_INCLUDE_DIRS}
+    dependencies/glad/include
+    dependencies/glfw/include
+    dependencies/cutil/include
+    dependencies/cvec/include
+)
+
+set(
+    SMT_LIBRARIES
+    ${OPENGL_LIBRARIES}
+    glad
+    glfw
+    cutil
+    cvec
+)
+
+include_directories(${SMT_INCLUDE_DIRS})
+link_libraries(${SMT_LIBRARIES})
+
+include(CTest)
+add_subdirectory(tests)

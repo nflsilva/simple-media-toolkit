@@ -1,12 +1,17 @@
-cmake_minimum_required(VERSION "3.26.4")
+cmake_minimum_required(VERSION 3.26.4)
 
-set(TARGET_NAME "cutils")
-project(${TARGET_NAME})
+project(cutil)
+
+set(CUTIL_SOURCES
+  source/hashTable.c
+  source/list.c
+  source/filesystem.c
+  source/math.c
+)
+
+include_directories(include)
+
+add_library(cutil STATIC ${CUTIL_SOURCES})
 
 include(CTest)
-include_directories(include)
-file(GLOB_RECURSE SRC_FILES source/*.c)
-
 add_subdirectory(tests)
-
-add_library(${TARGET_NAME} STATIC ${SRC_FILES})

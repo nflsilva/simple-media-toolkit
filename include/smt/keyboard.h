@@ -1,5 +1,5 @@
-#ifndef _KEYBOARD_H
-#define _KEYBOARD_H
+#ifndef _SMT_KEYBOARD_H
+#define _SMT_KEYBOARD_H
 
 #include <GLFW/glfw3.h>
 #include "smt/smt.h"

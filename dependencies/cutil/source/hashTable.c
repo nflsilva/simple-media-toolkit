@@ -7,7 +7,7 @@ unsigned long djb2Hash(const char *str)
     int c;
     while((c = *str++))
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-    return hash;
+    return 0;
 }
 
 CUTILHashTableBucketChainNode* createBucketChainNode(const char* key, void* data)
@@ -41,10 +41,8 @@ void cutilHashTableDestroy(CUTILHashTable* hashTable, int cleanData)
         CUTILHashTableBucket* bucket = &hashTable->buckets[i];
         if(bucket->chain != NULL) 
             cutilListDestroy(bucket->chain, cleanData);
-        else if(cleanData) 
-            free(bucket->data);
-        free(bucket);
     }
+    free(hashTable->buckets);
     free(hashTable);
 }
 
@@ -55,30 +53,25 @@ void cutilHashTableAddElement(CUTILHashTable* hashTable, const char* key, void* 
     CUTILHashTableBucket* bucket = getBucketForKey(hashTable, key);
 
     // bucket is unused
-    if(bucket->data == NULL) 
-    {
-        bucket->data = data;
-        bucket->key = key;
-        return;
-    }
-
-    // value update
-    if(strcmp(bucket->key, key) == 0) {
-        bucket->data = data;
-        return;
-    } 
-        
-
-    // found first collision. Will move value into the chain
     if(bucket->chain == NULL)
     {
         bucket->chain = cutilListCreate();
-        cutilListAppendElement(bucket->chain, createBucketChainNode(bucket->key, bucket->data)); 
-        bucket->key = NULL;
-        bucket->data = NULL;
+    }
+    else 
+    {
+        // search for this key on the chain and update the value if needed
+        for(int i = 0; i < bucket->chain->size; i++)
+        {
+            CUTILHashTableBucketChainNode* node = cutilListGetElement(bucket->chain, i);
+            if(strcmp(node->key, key) == 0) 
+            {
+                node->data = data;
+                return;
+            }
+        }
     }
 
-    // bucket has some collisions
+    // add the data to the chain
     cutilListAppendElement(bucket->chain, createBucketChainNode(key, data));    
 }
 
@@ -89,10 +82,10 @@ void* cutilHashTableGetElement(CUTILHashTable* hashTable, const char* key)
     CUTILHashTableBucket* bucket = getBucketForKey(hashTable, key);
 
     // key doesn't exist
-    if(bucket->data == NULL) return NULL;
+    if(bucket->chain == NULL || bucket->chain->size == 0) return NULL;
 
     // key has no collisions
-    if(bucket->chain == NULL) return bucket->data;
+    if(bucket->chain->size == 1) return bucket->chain->head->data;
 
     // find the key on chain
     for(int i = 0; i < bucket->chain->size; i++) 
@@ -111,14 +104,15 @@ void* cutilHashTableRemoveElement(CUTILHashTable* hashTable, const char* key)
     CUTILHashTableBucket* bucket = getBucketForKey(hashTable, key);
 
     // key doesn't exist
-    if(bucket->data == NULL) return NULL;
+    if(bucket->chain == NULL || bucket->chain->size == 0) return NULL;
 
-    // key has no collisions
-    if(bucket->chain == NULL) 
-    {
-        void* dataPtr = bucket->data;
-        bucket->data = NULL;
-        bucket->key = NULL;
+    // check if this was the last element on the chain and updates bucket if so
+    if(bucket->chain->size == 1) {
+        CUTILHashTableBucketChainNode* node = cutilListGetElement(bucket->chain, 0);
+        void* dataPtr = node->data;
+        cutilListDestroy(bucket->chain, 0);
+        bucket->chain = NULL;
+        free(node);
         return dataPtr;
     }
 
@@ -129,18 +123,11 @@ void* cutilHashTableRemoveElement(CUTILHashTable* hashTable, const char* key)
         CUTILHashTableBucketChainNode* node = cutilListGetElement(bucket->chain, i);
         if(strcmp(node->key, key) == 0) 
         {
-            dataPtr = cutilListRemoveElement(bucket->chain, i);
+            node = cutilListRemoveElement(bucket->chain, i);
+            dataPtr = node->data;
+            free(node);
             break;
         }
-    }
-
-    // check if this was the last element on the chain and updates bucket if so
-    if(bucket->chain->size == 1) {
-        CUTILHashTableBucketChainNode* node = cutilListGetElement(bucket->chain, 0);
-        bucket->key = node->key;
-        bucket->data = node->data;
-        cutilListDestroy(bucket->chain, 0);
-        bucket->chain = NULL;
     }
 
     return dataPtr;
