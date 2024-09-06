@@ -1,8 +1,8 @@
 #include "smt/render.h"
 
-SMT_Renderer* smtRendererInit()
+SMTRenderer* smtRendererInit()
 {
-
+    return NULL;
 }
 
 void smtRendererDestroy()
@@ -12,7 +12,7 @@ void smtRendererDestroy()
 
 void smtRenderDrawShapes()
 {
-    
+
 }
 
 void smtRendererDraw()

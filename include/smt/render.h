@@ -5,15 +5,15 @@
 #include "smt/color.h"
 #include "smt/shader.h"
 
-typedef SMT_Color Color;
-typedef CVEC_Vec2f Vec2f;
+typedef SMTColor Color;
+typedef CVECVec2f Vec2f;
 
-typedef struct SMT_Shape {
+typedef struct SMTShape {
     int type;
     Vec2f* point0;
     Vec2f* point1;
     Color* color;
-} SMT_Shape;
+} SMTShape;
 
 /*!
  * Represents the current renderer context
@@ -21,13 +21,13 @@ typedef struct SMT_Shape {
  * @param shaderList A list of shader codes which compose this shader.
  * @param uniformLocations The map which stores the location for each uniform.
  */
-typedef struct SMT_Renderer {
-    SMT_Shader* shapeShader;
-    SMT_Shape* shapes;
+typedef struct SMTRenderer {
+    SMTShader* shapeShader;
+    SMTShape* shapes;
     int nShapes;
-} SMT_Renderer;
+} SMTRenderer;
 
-SMT_Renderer* smtRendererInit();
+SMTRenderer* smtRendererInit();
 
 void smtRendererDestroy();
 
