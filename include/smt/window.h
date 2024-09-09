@@ -1,10 +1,15 @@
 #ifndef _SMT_WINDOW_H
 #define _SMT_WINDOW_H
 
-#include <stdlib.h>
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
+#include <stdlib.h>
+
 #include "smt/smt.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*!
  *  Opens the application window with a valid OpenGL context.
@@ -31,5 +36,9 @@ void smtWindowClose();
  *  Updates window context.
  */
 void smtWindowUpdate();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
