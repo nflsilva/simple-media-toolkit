@@ -1,8 +1,8 @@
 #ifndef _SMT_WINDOW_H
 #define _SMT_WINDOW_H
 
-#include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <stdlib.h>
 
 #include "smt/smt.h"
