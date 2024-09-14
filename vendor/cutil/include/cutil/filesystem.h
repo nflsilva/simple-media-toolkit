@@ -3,7 +3,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <dirent.h>
+#ifdef _WIN32
+    #include <windows.h>  // Windows-specific headers
+	#define DT_DIR 4
+#else
+    #include <dirent.h>   // POSIX-specific headers
+#endif
 #include <string.h>
 
 #include "cutil/list.h"
@@ -13,6 +18,19 @@
 #define MAX_DIRECTORY_CONTENTS 1024
 #define MAX_PATH_NAME_SIZE 1024
 #define MAX_EXTENSION_SIZE 10
+
+#ifdef _WIN32
+struct dirent {
+    char d_name[MAX_PATH];
+    unsigned char d_type;
+};
+
+typedef struct {
+    HANDLE hFind;
+    WIN32_FIND_DATA findFileData;
+    struct dirent direntry;
+} DIR;
+#endif
 
 /*!
  * Represents a file system item.

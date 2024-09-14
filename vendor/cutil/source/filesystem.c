@@ -1,5 +1,48 @@
 #include "cutil/filesystem.h"
 
+#ifdef _WIN32
+DIR* opendir(const char* name) {
+    DIR* dir = (DIR*)malloc(sizeof(DIR));
+    if (!dir) return NULL;
+    
+    char searchPath[MAX_PATH];
+    snprintf(searchPath, sizeof(searchPath), "%s\\*", name); // Append '\*' for directory searching
+    
+    dir->hFind = FindFirstFile(searchPath, &dir->findFileData);
+    if (dir->hFind == INVALID_HANDLE_VALUE) {
+        free(dir);
+        return NULL;
+    }
+    return dir;
+}
+
+struct dirent* readdir(DIR* dir) {
+    if (dir->hFind == INVALID_HANDLE_VALUE)
+        return NULL;
+
+    strncpy(dir->direntry.d_name, dir->findFileData.cFileName, MAX_PATH);
+    
+    if (!FindNextFile(dir->hFind, &dir->findFileData)) {
+        if (GetLastError() == ERROR_NO_MORE_FILES) {
+            FindClose(dir->hFind);
+            dir->hFind = INVALID_HANDLE_VALUE;
+        }
+        return NULL;
+    }
+    
+    return &dir->direntry;
+}
+
+int closedir(DIR* dir) {
+    if (dir == NULL) return -1;
+    if (dir->hFind != INVALID_HANDLE_VALUE)
+        FindClose(dir->hFind);
+    free(dir);
+    return 0;
+}
+#endif
+
+
 CUTILFileBrowser* cutilFileBrowserInit(const char* directoryPath, const char* fileExtension)
 {
     CUTILFileBrowser* browser = (CUTILFileBrowser*) malloc(sizeof(CUTILFileBrowser));

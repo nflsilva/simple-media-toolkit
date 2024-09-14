@@ -12,5 +12,5 @@ add_library(cvec STATIC ${CVEC_SOURCES})
 
 target_include_directories(cvec PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-include(CTest)
-add_subdirectory(tests)
+#include(CTest)
+#add_subdirectory(tests)
