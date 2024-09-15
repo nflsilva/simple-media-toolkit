@@ -10,9 +10,9 @@
  * @param blue The value of blue.
  * @param alpha The value of alpha.
  */
-typedef struct SMTColor {
+typedef struct SMT_Color {
     float red, green, blue, alpha;
-} SMTColor;
+} SMT_Color;
 
 /*!
  * Creates a new RGBA color.
@@ -23,6 +23,6 @@ typedef struct SMTColor {
  * @return A pointer to the new color.
  * @warning Input values will be clipped to [`0.0`, `1.0`]
  */
-SMTColor* smtColorCreate(float r, float g, float b, float a);
+SMT_Color* smtColorCreate(float r, float g, float b, float a);
 
 #endif

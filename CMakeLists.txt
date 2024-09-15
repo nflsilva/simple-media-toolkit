@@ -14,10 +14,11 @@ add_subdirectory(vendor/glad)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/cutil)
 add_subdirectory(vendor/cvec)
+add_subdirectory(vendor/stb)
 
 target_include_directories(smt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include ${OPENGL_INCLUDE_DIRS})
 
-target_link_libraries(smt PUBLIC ${OPENGL_LIBRARIES} glad glfw cutil cvec)
+target_link_libraries(smt PUBLIC ${OPENGL_LIBRARIES} glad glfw cutil cvec stb)
 
 include(CTest)
 add_subdirectory(tests)

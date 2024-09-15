@@ -1,6 +1,6 @@
 #include "smt/render.h"
 
-SMTRenderer* smtRendererInit()
+SMT_Renderer* smtRendererInit()
 {
     return NULL;
 }
@@ -10,17 +10,12 @@ void smtRendererDestroy()
 
 }
 
-void smtRenderDrawShapes()
-{
-
-}
-
 void smtRendererDraw()
 {
 
 }
 
-void smtRenderRectangle(Vec2f* topLeft, Vec2f* bottomRight, Color* fillColor)
+void smtRenderSprite(SMT_Sprite* sprite)
 {
-
+    
 }

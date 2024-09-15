@@ -4,35 +4,29 @@
 #include "cvec/vec2.h"
 #include "smt/color.h"
 #include "smt/shader.h"
+#include "smt/sprite.h"
 
-typedef SMTColor Color;
+typedef SMT_Color Color;
 typedef CVECVec2f Vec2f;
-
-typedef struct SMTShape {
-    int type;
-    Vec2f* point0;
-    Vec2f* point1;
-    Color* color;
-} SMTShape;
 
 /*!
  * Represents the current renderer context
- * @param shapeShader The selected shader for shapes
- * @param shaderList A list of shader codes which compose this shader.
+ * @param spriteShader The selected shader for sprites
+ * @param sprites A list of sprites to render
  * @param uniformLocations The map which stores the location for each uniform.
  */
-typedef struct SMTRenderer {
-    SMTShader* shapeShader;
-    SMTShape* shapes;
+typedef struct SMT_Renderer {
+    SMT_Shader spriteShader;
+    SMT_Sprite sprite;
     int nShapes;
-} SMTRenderer;
+} SMT_Renderer;
 
-SMTRenderer* smtRendererInit();
+SMT_Renderer* smtRendererInit();
 
 void smtRendererDestroy();
 
 void smtRendererDraw();
 
-void smtRenderRectangle(Vec2f* topLeft, Vec2f* bottomRight, Color* fillColor);
+void smtRenderSprite(SMT_Sprite* sprite);
 
 #endif

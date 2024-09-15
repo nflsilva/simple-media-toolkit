@@ -12,7 +12,7 @@ int main()
     assert(smtWindowOpen(10, 10, "startupTest") == SMT_SUCCESS);
 
     // testing shader creation and compilation
-    SMTShader* shapeShader = smtShaderCreateShapeShader();
+    SMT_Shader* shapeShader = smtShaderCreateShapeShader();
     assert(shapeShader != NULL);
 
     // testing render batches
@@ -32,7 +32,7 @@ int main()
         colors[i] = i * 1.0;
     smtBatchAddAttributefData(batch, COLOR_INDEX, colors, 3);
 
-    //assert( ((SMTBatchAttribute*)(batch->attributes, 0))->buffer )
+    //assert( ((SMT_BatchAttribute*)(batch->attributes, 0))->buffer )
 
     // cleanup 
     smtBatchDestroy(batch);

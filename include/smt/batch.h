@@ -13,12 +13,12 @@
 /*!
  * 
  */
-typedef struct SMTBatchAttribute {
+typedef struct SMT_BatchAttribute {
     GLuint glVBO;
     unsigned int index, size;
     void* buffer;
     unsigned int bufferSize;
-} SMTBatchAttribute;
+} SMT_BatchAttribute;
 
 /*!
  * Represents a batch of entities to render
@@ -30,12 +30,12 @@ typedef struct SMTBatch {
     unsigned int maxEntities;
     CUTILList* attributes;
 
-    SMTBatchAttribute* indexBuffer;
+    SMT_BatchAttribute* indexBuffer;
 } SMTBatch;
 
-SMTBatchAttribute* smtBatchAttributeCreate(SMTBatch* batch, unsigned int index, unsigned int size, void* buffer, int type);
+SMT_BatchAttribute* smtBatchAttributeCreate(SMTBatch* batch, unsigned int index, unsigned int size, void* buffer, int type);
 
-void smtBatchAttributeDestroy(SMTBatchAttribute* attribute);
+void smtBatchAttributeDestroy(SMT_BatchAttribute* attribute);
 
 /*!
  * Creates a new entities batch.

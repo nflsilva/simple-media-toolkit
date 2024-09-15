@@ -1,7 +1,7 @@
 #include "smt/batch.h"
 
 
-SMTBatchAttribute* smtBatchAttributeCreate(SMTBatch* batch, unsigned int index, unsigned int size, void* buffer, int type)
+SMT_BatchAttribute* smtBatchAttributeCreate(SMTBatch* batch, unsigned int index, unsigned int size, void* buffer, int type)
 {
     glBindVertexArray(batch->glVAO);
 
@@ -12,7 +12,7 @@ SMTBatchAttribute* smtBatchAttributeCreate(SMTBatch* batch, unsigned int index, 
     glVertexAttribIPointer(index, size, type, GL_FALSE, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    SMTBatchAttribute* attribute = (SMTBatchAttribute*)malloc(sizeof(SMTBatchAttribute));
+    SMT_BatchAttribute* attribute = (SMT_BatchAttribute*)malloc(sizeof(SMT_BatchAttribute));
     attribute->glVBO = glVBO;
     attribute->index = index;
     attribute->size = size;
@@ -22,7 +22,7 @@ SMTBatchAttribute* smtBatchAttributeCreate(SMTBatch* batch, unsigned int index, 
     return attribute;
 }
 
-void smtBatchAttributeDestroy(SMTBatchAttribute* attribute)
+void smtBatchAttributeDestroy(SMT_BatchAttribute* attribute)
 {
     if(!attribute) return;
     glDeleteBuffers(1, &attribute->glVBO);
@@ -50,7 +50,7 @@ void smtBatchDestroy(SMTBatch* batch)
     if(!batch) return;
     glDeleteVertexArrays(1, &batch->glVAO);
 
-    SMTBatchAttribute* attribute = NULL;
+    SMT_BatchAttribute* attribute = NULL;
     do {
         attribute = cutilListPopElement(batch->attributes);
         if(attribute == NULL) break;
@@ -63,7 +63,7 @@ void smtBatchDestroy(SMTBatch* batch)
 int smtBatchAddAttribute(SMTBatch* batch, unsigned int index, unsigned int size, void* buffer, int type)
 {
     glBindVertexArray(batch->glVAO);
-    SMTBatchAttribute* attribute = smtBatchAttributeCreate(batch, index, size, buffer, type);
+    SMT_BatchAttribute* attribute = smtBatchAttributeCreate(batch, index, size, buffer, type);
     if(!attribute) return SMT_FAILURE;
     cutilListAppendElement(batch->attributes, attribute);
     return SMT_SUCCESS;
@@ -97,13 +97,13 @@ void smtBatchAddAttributefData(SMTBatch* batch, unsigned int index, float* data,
     CUTILListNode* node = batch->attributes->head;
 
     do {
-        if(((SMTBatchAttribute*)(node->data))->index == index) break;
+        if(((SMT_BatchAttribute*)(node->data))->index == index) break;
         node = node->next;
     } while (node != NULL);
 
     if(node == NULL) return;
 
-    SMTBatchAttribute* attribute = (SMTBatchAttribute*)node->data;
+    SMT_BatchAttribute* attribute = (SMT_BatchAttribute*)node->data;
 
     memcpy(&((float*)attribute->buffer)[attribute->bufferSize], data, sizeof(float) * size * attribute->size);
     attribute->bufferSize += size * attribute->size;
