@@ -8,6 +8,11 @@
 
 #include "cvec/vec3.h"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+
 /*!
  * Represents a 4x4 matrix of type `float`.
  * @param data The value of `x` coordinate.
