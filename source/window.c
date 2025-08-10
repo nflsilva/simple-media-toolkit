@@ -1,53 +1,50 @@
 #include "smt/window.h"
 
-static GLFWwindow* smlWindow = NULL;
-
 static void error_callback(int error, const char* description)
 {
-    printf("Error: %s\n", description);
+    printf("Error: %d : %s\n", error, description);
 }
 
-int smtWindowOpen(int width, int height, const char* title) 
+SMT_Window* smtWindowOpen(int width, int height, const char* title) 
 {
     glfwSetErrorCallback(error_callback);
 
     if (!glfwInit())
     {
         smtSetErrorMessage("SMT: failed to init glfw");
-        return SMT_FAILURE;
+        return NULL;
     }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    smlWindow = glfwCreateWindow(width, height, title, NULL, NULL);
-    if (!smlWindow)
+    GLFWwindow* glfwWindow = glfwCreateWindow(width, height, title, NULL, NULL);
+    if (!glfwWindow)
     {
         glfwTerminate();
         smtSetErrorMessage("SMT: failed to create glfw window");
-        return SMT_FAILURE;
+        return NULL;
     }
 
-    glfwMakeContextCurrent(smlWindow);
-    gladLoadGL();
-    glfwSwapInterval(1);
+    SMT_Window* window = (SMT_Window*)malloc(sizeof(SMT_Window));
+    window->glfwWindow = glfwWindow;
 
-    return SMT_SUCCESS;
+    return window;
 }
 
-int smtWindowShouldClose() 
+int smtWindowShouldClose(SMT_Window* window) 
 {
-    if(!smlWindow || glfwWindowShouldClose(smlWindow) == GLFW_TRUE) return SMT_TRUE;
+    if(!window || glfwWindowShouldClose(window->glfwWindow) == GLFW_TRUE) return SMT_TRUE;
     return SMT_FALSE;
 }
 
-void smtWindowClose() 
+void smtWindowDestroy(SMT_Window* window) 
 {
-    if(!smlWindow) return;
-    glfwDestroyWindow(smlWindow);
+    if(!window) return;
+    glfwDestroyWindow(window->glfwWindow);
 }
 
-void smtWindowUpdate() 
+void smtWindowUpdate(SMT_Window* window) 
 {
-    glfwSwapBuffers(smlWindow);
+    glfwSwapBuffers(window->glfwWindow);
     glfwPollEvents();
 }

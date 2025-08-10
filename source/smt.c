@@ -1,5 +1,10 @@
 #include "smt/smt.h"
 
+#include "smt/window.h"
+#include "smt/render.h"
+
+static SMT_Window* window = NULL;
+static SMT_Renderer* renderer = NULL;
 static int smtErrorMessageSize = 0;
 char *smtErrorMessage = NULL;
 
@@ -21,4 +26,16 @@ void smtSetErrorMessage(const char* message)
     smtErrorMessageSize = newMessageSize;
     strcpy(smtErrorMessage, message);
     printf("smt_error: %s\n", smtErrorMessage);
+}
+
+int smtInit(int width, int height, const char* title) {
+    window = smtWindowOpen(width, height, title);
+    renderer = smtRendererInit(window);
+
+    return SMT_SUCCESS;
+}
+
+int smtDestroy() {
+    smtRendererDestroy();
+    smtWindowDestroy(window);
 }

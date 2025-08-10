@@ -34,4 +34,13 @@ char* smtGetErrorMessage();
  */
 void smtSetErrorMessage(const char* message);
 
+/*!
+ * Inits SMT.
+ * @param width The window width to set.
+ * @param height The window height to set.
+ * @param title The window height to set.
+ * @returns `SMT_SUCCESS` if successfull. `SMT_FAILURE` if an error occurred
+ */
+int smtInit(int width, int height, const char* title);
+
 #endif

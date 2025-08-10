@@ -1,7 +1,13 @@
 #include "smt/render.h"
 
-SMT_Renderer* smtRendererInit()
+#include <glad/glad.h>
+
+SMT_Renderer* smtRendererInit(SMT_Window* window)
 {
+    glfwMakeContextCurrent(window->glfwWindow);
+    gladLoadGL();
+    glfwSwapInterval(1);
+
     return NULL;
 }
 
@@ -15,7 +21,7 @@ void smtRendererDraw()
 
 }
 
-void smtRenderSprite(SMT_Sprite* sprite)
+void smtRenderSprite(SMT_Renderer* renderer, SMT_Sprite* sprite)
 {
     
 }

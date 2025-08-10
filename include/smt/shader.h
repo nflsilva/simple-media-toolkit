@@ -1,8 +1,6 @@
 #ifndef _SMT_SHADER_H
 #define _SMT_SHADER_H
 
-#include <glad/glad.h>
-
 #include "cutil/hashTable.h"
 #include "cutil/list.h"
 #include "cutil/filesystem.h"
@@ -112,11 +110,5 @@ int smtShaderSetUniformVec4F(SMT_Shader* shader, const char* name, float* values
  * @return 'SMT_SUCCESS' if everything when well. 'SMT_FAILURE' otherwise. 
  */
 int smtShaderSetUniformMat4F(SMT_Shader* shader, const char* name, float* values);
-
-/*!
- * Creates a shader for the different available shapes.
- * @returns A pointer to the newly created shader. `NULL` if an error occurred.
- */
-SMT_Shader* smtShaderCreateShapeShader();
 
 #endif

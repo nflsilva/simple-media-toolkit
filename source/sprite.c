@@ -1,5 +1,9 @@
 #include "smt/sprite.h"
+
 #include <stb_image.h>
+
+#include "vertex_shader.h"
+#include "fragment_shader.h"
 
 SMT_Sprite* smtSpriteCreateFromFile(const char* path) 
 {
@@ -49,4 +53,21 @@ void smtSpriteDestroy(SMT_Sprite* sprite)
 {
     assert(sprite != NULL);
     glDeleteTextures(1, &sprite->textureId);
+}
+
+SMT_Shader* smtShaderCreateSpiteShader()
+{
+    const unsigned char* vertexShaderCode = vertex_shader;
+    if(!vertexShaderCode) return NULL;
+    const unsigned char* fragmentShaderCode = fragment_shader;
+    if(!fragmentShaderCode) return NULL;
+    
+    SMT_Shader* shader = smtShaderCreate(&vertexShaderCode, &fragmentShaderCode);
+    if(!shader) return NULL;
+
+    smtShaderAddUniform(shader, "uni_modelMatrix");
+    smtShaderAddUniform(shader, "uni_viewMatrix");
+    smtShaderAddUniform(shader, "uni_modelMatrix");
+
+    return shader;
 }

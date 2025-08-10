@@ -1,7 +1,8 @@
 #include "smt/batch.h"
 
+#include "smt/utils.h"
 
-SMT_BatchAttribute* smtBatchAttributeCreate(SMTBatch* batch, unsigned int index, unsigned int size, void* buffer, int type)
+SMT_BatchAttribute* SMT_BatchAttributeCreate(SMT_Batch* batch, unsigned int index, unsigned int size, void* buffer, int type)
 {
     glBindVertexArray(batch->glVAO);
 
@@ -22,7 +23,7 @@ SMT_BatchAttribute* smtBatchAttributeCreate(SMTBatch* batch, unsigned int index,
     return attribute;
 }
 
-void smtBatchAttributeDestroy(SMT_BatchAttribute* attribute)
+void SMT_BatchAttributeDestroy(SMT_BatchAttribute* attribute)
 {
     if(!attribute) return;
     glDeleteBuffers(1, &attribute->glVBO);
@@ -30,9 +31,9 @@ void smtBatchAttributeDestroy(SMT_BatchAttribute* attribute)
     free(attribute);
 }
 
-SMTBatch* smtBatchCreate(unsigned int maxEntities, unsigned int nVertexPerEntity)
+SMT_Batch* SMT_BatchCreate(unsigned int maxEntities, unsigned int nVertexPerEntity)
 {
-    SMTBatch* batch = (SMTBatch*)malloc(sizeof(SMTBatch));
+    SMT_Batch* batch = (SMT_Batch*)malloc(sizeof(SMT_Batch));
     glGenVertexArrays(1, &batch->glVAO);
     batch->nEntities = 0;
     batch->maxEntities = maxEntities;
@@ -45,7 +46,7 @@ SMTBatch* smtBatchCreate(unsigned int maxEntities, unsigned int nVertexPerEntity
     return batch;
 }
 
-void smtBatchDestroy(SMTBatch* batch)
+void SMT_BatchDestroy(SMT_Batch* batch)
 {
     if(!batch) return;
     glDeleteVertexArrays(1, &batch->glVAO);
@@ -54,43 +55,43 @@ void smtBatchDestroy(SMTBatch* batch)
     do {
         attribute = cutilListPopElement(batch->attributes);
         if(attribute == NULL) break;
-        smtBatchAttributeDestroy(attribute);
+        SMT_BatchAttributeDestroy(attribute);
     } while (attribute != NULL);
     free(batch->attributes);
     free(batch);
 }
 
-int smtBatchAddAttribute(SMTBatch* batch, unsigned int index, unsigned int size, void* buffer, int type)
+int SMT_BatchAddAttribute(SMT_Batch* batch, unsigned int index, unsigned int size, void* buffer, int type)
 {
     glBindVertexArray(batch->glVAO);
-    SMT_BatchAttribute* attribute = smtBatchAttributeCreate(batch, index, size, buffer, type);
+    SMT_BatchAttribute* attribute = SMT_BatchAttributeCreate(batch, index, size, buffer, type);
     if(!attribute) return SMT_FAILURE;
     cutilListAppendElement(batch->attributes, attribute);
     return SMT_SUCCESS;
 }
 
-void smtBatchAddAttributei(SMTBatch* batch, unsigned int index, unsigned int size)
+void SMT_BatchAddAttributei(SMT_Batch* batch, unsigned int index, unsigned int size)
 {
     if(!batch) return;
     int* buffer = (int*)malloc(sizeof(int) * batch->maxEntities * batch->nVertexPerEntity * size);
-    if(!smtBatchAddAttribute(batch, index, size, buffer, GL_INT))
+    if(!SMT_BatchAddAttribute(batch, index, size, buffer, GL_INT))
         free(buffer);
 }
 
-void smtBatchAddAttributef(SMTBatch* batch, unsigned int index, unsigned int size)
+void SMT_BatchAddAttributef(SMT_Batch* batch, unsigned int index, unsigned int size)
 {
     if(!batch) return;
     float* buffer = (float*)malloc(sizeof(float) * batch->maxEntities * batch->nVertexPerEntity * size);
-    if(!smtBatchAddAttribute(batch, index, size, buffer, GL_FLOAT))
+    if(!SMT_BatchAddAttribute(batch, index, size, buffer, GL_FLOAT))
         free(buffer);
 }
 
-void smtBatchAddAttributeiData(SMTBatch* batch, unsigned int index, int* data, unsigned int size)
+void SMT_BatchAddAttributeiData(SMT_Batch* batch, unsigned int index, int* data, unsigned int size)
 {
-
+    ASSERT_MSG(0, "batch.c SMT_BatchAddAttributeiData not implemented");
 }
 
-void smtBatchAddAttributefData(SMTBatch* batch, unsigned int index, float* data, unsigned int size)
+void SMT_BatchAddAttributefData(SMT_Batch* batch, unsigned int index, float* data, unsigned int size)
 {
     if(!batch || index > SMT_BATCH_MAX_ATTRIBUTES || batch->attributes->size == 0) return;
 

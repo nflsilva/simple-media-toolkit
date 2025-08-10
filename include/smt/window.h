@@ -11,6 +11,10 @@
 extern "C" {
 #endif
 
+typedef struct SMT_Window {
+    GLFWwindow* glfwWindow;
+} SMT_Window;
+
 /*!
  *  Opens the application window with a valid OpenGL context.
  * @param width The window width to set.
@@ -19,23 +23,23 @@ extern "C" {
  * @returns `SMT_SUCCESS` if successfull. `SMT_FAILURE` if an error occurred
  * or the window is already opened.
  */
-int smtWindowOpen(int width, int height, const char* title);
+SMT_Window* smtWindowOpen(int width, int height, const char* title);
 
 /*!
  *  Indicates if the applicatin window will close.
  * @returns `SMT_TRUE` if the window will close. `SMT_FALSE` otherwise.
  */
-int smtWindowShouldClose();
+int smtWindowShouldClose(SMT_Window* window);
 
 /*!
  *  Destroys window context.
  */
-void smtWindowClose();
+void smtWindowDestroy(SMT_Window* window);
 
 /*!
  *  Updates window context.
  */
-void smtWindowUpdate();
+void smtWindowUpdate(SMT_Window* window);
 
 #ifdef __cplusplus
 }

@@ -1,6 +1,6 @@
 #include "smt/shader.h"
-#include "vertex_shader.h"
-#include "fragment_shader.h"
+
+#include <glad/glad.h>
 
 void smtShaderGetShaderInfoLog(int glShader)
 {
@@ -182,21 +182,4 @@ int smtShaderSetUniformMat4F(SMT_Shader* shader, const char* name, float* values
     }
 	glUniformMatrix4fv(location, 1, GL_FALSE, values);
     return SMT_SUCCESS;
-}
-
-SMT_Shader* smtShaderCreateShapeShader()
-{
-    const unsigned char* vertexShaderCode = vertex_shader;
-    if(!vertexShaderCode) return NULL;
-    const unsigned char* fragmentShaderCode = fragment_shader;
-    if(!fragmentShaderCode) return NULL;
-    
-    SMT_Shader* shader = smtShaderCreate(&vertexShaderCode, &fragmentShaderCode);
-    if(!shader) return NULL;
-
-    smtShaderAddUniform(shader, "uni_modelMatrix");
-    smtShaderAddUniform(shader, "uni_viewMatrix");
-    smtShaderAddUniform(shader, "uni_modelMatrix");
-
-    return shader;
 }

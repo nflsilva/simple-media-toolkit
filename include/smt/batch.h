@@ -23,7 +23,7 @@ typedef struct SMT_BatchAttribute {
 /*!
  * Represents a batch of entities to render
  */
-typedef struct SMTBatch {
+typedef struct SMT_Batch {
     GLuint glVAO;
     unsigned int nEntities;
     unsigned int nVertexPerEntity;
@@ -31,25 +31,25 @@ typedef struct SMTBatch {
     CUTILList* attributes;
 
     SMT_BatchAttribute* indexBuffer;
-} SMTBatch;
+} SMT_Batch;
 
-SMT_BatchAttribute* smtBatchAttributeCreate(SMTBatch* batch, unsigned int index, unsigned int size, void* buffer, int type);
+SMT_BatchAttribute* SMT_BatchAttributeCreate(SMT_Batch* batch, unsigned int index, unsigned int size, void* buffer, int type);
 
-void smtBatchAttributeDestroy(SMT_BatchAttribute* attribute);
+void SMT_BatchAttributeDestroy(SMT_BatchAttribute* attribute);
 
 /*!
  * Creates a new entities batch.
  */
-SMTBatch* smtBatchCreate(unsigned int maxEntities, unsigned int nVertexPerEntity);
+SMT_Batch* SMT_BatchCreate(unsigned int maxEntities, unsigned int nVertexPerEntity);
 
-void smtBatchDestroy(SMTBatch* batch);
+void SMT_BatchDestroy(SMT_Batch* batch);
 
-void smtBatchAddAttributei(SMTBatch* batch, unsigned int index, unsigned int size);
+void SMT_BatchAddAttributei(SMT_Batch* batch, unsigned int index, unsigned int size);
 
-void smtBatchAddAttributef(SMTBatch* batch, unsigned int index, unsigned int size);
+void SMT_BatchAddAttributef(SMT_Batch* batch, unsigned int index, unsigned int size);
 
-void smtBatchAddAttributeiData(SMTBatch* batch, unsigned int index, int* data, unsigned int size);
+void SMT_BatchAddAttributeiData(SMT_Batch* batch, unsigned int index, int* data, unsigned int size);
 
-void smtBatchAddAttributefData(SMTBatch* batch, unsigned int index, float* data, unsigned int size);
+void SMT_BatchAddAttributefData(SMT_Batch* batch, unsigned int index, float* data, unsigned int size);
 
 #endif
