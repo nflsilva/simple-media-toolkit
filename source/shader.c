@@ -1,4 +1,6 @@
 #include "smt/shader.h"
+#include "vertex_shader.h"
+#include "fragment_shader.h"
 
 void smtShaderGetShaderInfoLog(int glShader)
 {
@@ -8,14 +10,14 @@ void smtShaderGetShaderInfoLog(int glShader)
     smtSetErrorMessage(message);
 }
 
-int smtShaderAddCode(SMT_Shader* shader, const char** code, int type)
+int smtShaderAddCode(SMT_Shader* shader, const unsigned char** code, int type)
 {
     if(!shader || !shader->shaderList) return SMT_FAILURE;
 
     int glShader = glCreateShader(type);
     if(!glShader) return SMT_FAILURE;
 
-    glShaderSource(glShader, 1, code, NULL);
+    glShaderSource(glShader, 1, (const GLchar* const*)code, NULL);
     glCompileShader(glShader);
 
     GLint success;
@@ -33,7 +35,7 @@ int smtShaderAddCode(SMT_Shader* shader, const char** code, int type)
     return SMT_SUCCESS;
 }
 
-SMT_Shader* smtShaderCreate(const char** vertexCode, const char** fragmentCode) 
+SMT_Shader* smtShaderCreate(const unsigned char** vertexCode, const unsigned char** fragmentCode) 
 {
     int programId = glCreateProgram();
     if(!programId)
@@ -184,9 +186,9 @@ int smtShaderSetUniformMat4F(SMT_Shader* shader, const char* name, float* values
 
 SMT_Shader* smtShaderCreateShapeShader()
 {
-    const char* vertexShaderCode = cutilFileBrowserLoadFile("../../assets/shader/vertex.glsl");
+    const unsigned char* vertexShaderCode = vertex_shader;
     if(!vertexShaderCode) return NULL;
-    const char* fragmentShaderCode = cutilFileBrowserLoadFile("../../assets/shader/fragment.glsl");
+    const unsigned char* fragmentShaderCode = fragment_shader;
     if(!fragmentShaderCode) return NULL;
     
     SMT_Shader* shader = smtShaderCreate(&vertexShaderCode, &fragmentShaderCode);
@@ -195,9 +197,6 @@ SMT_Shader* smtShaderCreateShapeShader()
     smtShaderAddUniform(shader, "uni_modelMatrix");
     smtShaderAddUniform(shader, "uni_viewMatrix");
     smtShaderAddUniform(shader, "uni_modelMatrix");
-
-    free((char*)vertexShaderCode);
-    free((char*)fragmentShaderCode);
 
     return shader;
 }

@@ -26,7 +26,7 @@ typedef struct SMT_Shader {
  * @param fragmentCode The code for the fragment shader program.
  * @returns A pointer to the newly created shader. `NULL` if an error occurred.
  */
-SMT_Shader* smtShaderCreate(const char** vertexCode, const char** fragmentCode);
+SMT_Shader* smtShaderCreate(const unsigned char** vertexCode, const unsigned char** fragmentCode);
 
 /*!
  * Destroys and cleans up a given shader.
