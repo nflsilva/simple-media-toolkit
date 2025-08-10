@@ -13,7 +13,7 @@ int smtWindowOpen(int width, int height, const char* title)
 
     if (!glfwInit())
     {
-        smtSetErrorMessage("");
+        smtSetErrorMessage("SMT: failed to init glfw");
         return SMT_FAILURE;
     }
 
@@ -23,7 +23,7 @@ int smtWindowOpen(int width, int height, const char* title)
     if (!smlWindow)
     {
         glfwTerminate();
-        smtSetErrorMessage("");
+        smtSetErrorMessage("SMT: failed to create glfw window");
         return SMT_FAILURE;
     }
 
