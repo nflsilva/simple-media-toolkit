@@ -13,7 +13,6 @@ find_package(OpenGL REQUIRED)
 add_subdirectory(vendor/glad)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/cutil)
-add_subdirectory(vendor/cvec)
 add_subdirectory(vendor/stb)
 
 file(GLOB_RECURSE SHADER_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/shaders/*.glsl)
@@ -42,7 +41,7 @@ set_source_files_properties(${GENERATED_HEADERS} PROPERTIES GENERATED TRUE)
 target_sources(smt PRIVATE ${GENERATED_SHADER_HEADERS})
 target_include_directories(smt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include ${OPENGL_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 
-target_link_libraries(smt PUBLIC ${OPENGL_LIBRARIES} glad glfw cutil cvec stb)
+target_link_libraries(smt PUBLIC ${OPENGL_LIBRARIES} glad glfw cutil stb)
 
 include(CTest)
 add_subdirectory(tests)
