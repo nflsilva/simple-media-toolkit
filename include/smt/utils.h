@@ -5,6 +5,23 @@
 #include <stdlib.h>
 #include <assert.h>
 
+/*
+ *  Semantic sugar for the number `1`.
+ */
+#define SMT_TRUE 1
+/*
+ *  Semantic sugar for the number `0`.
+ */
+#define SMT_FALSE 0
+/*
+ *  Semantic sugar for the number `1`.
+ */
+#define SMT_SUCCESS 1
+/*
+ *  Semantic sugar for the number `0`.
+ */
+#define SMT_FAILURE 0
+
 #define ASSERT_MSG(expr, msg) \
     do { \
         if (!(expr)) { \

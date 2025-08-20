@@ -1,11 +1,11 @@
 #ifndef _SMT_BATCH_H
 #define _SMT_BATCH_H
 
+#include <cutil/list.h>
 #include <glad/glad.h>
 #include <stdlib.h>
 
-#include "smt/smt.h"
-#include "cutil/list.h"
+#include "smt/utils.h"
 
 #define SMT_BATCH_MAX_ATTRIBUTES 20
 #define SMT_BATCH_MAX_ENTITIES 2000
@@ -15,10 +15,10 @@
  */
 typedef struct SMT_BatchAttribute {
     GLuint glVBO;
-    unsigned int index, size;
+    unsigned int index, size, type;
     void* buffer;
-    unsigned int bufferSize;
-} SMT_BatchAttribute;
+    unsigned int bufferLength;
+} SMT_BatchAttribute_t;
 
 /*!
  * Represents a batch of entities to render
@@ -28,28 +28,26 @@ typedef struct SMT_Batch {
     unsigned int nEntities;
     unsigned int nVertexPerEntity;
     unsigned int maxEntities;
-    CUTILList* attributes;
+    CUTILList_t attributes;
 
-    SMT_BatchAttribute* indexBuffer;
-} SMT_Batch;
-
-SMT_BatchAttribute* SMT_BatchAttributeCreate(SMT_Batch* batch, unsigned int index, unsigned int size, void* buffer, int type);
-
-void SMT_BatchAttributeDestroy(SMT_BatchAttribute* attribute);
+    SMT_BatchAttribute_t* indexBuffer;
+} SMT_Batch_t;
 
 /*!
  * Creates a new entities batch.
  */
-SMT_Batch* SMT_BatchCreate(unsigned int maxEntities, unsigned int nVertexPerEntity);
+void smtBatchInitialise(unsigned int maxEntities, unsigned int nVertexPerEntity, SMT_Batch_t* batch);
 
-void SMT_BatchDestroy(SMT_Batch* batch);
+void smtBatchCleanup(SMT_Batch_t* batch);
 
-void SMT_BatchAddAttributei(SMT_Batch* batch, unsigned int index, unsigned int size);
+void smtBatchDraw(SMT_Batch_t* batch);
 
-void SMT_BatchAddAttributef(SMT_Batch* batch, unsigned int index, unsigned int size);
+void smtBatchUnbind(SMT_Batch_t* batch);
 
-void SMT_BatchAddAttributeiData(SMT_Batch* batch, unsigned int index, int* data, unsigned int size);
+void smtBatchResetBuffers(SMT_Batch_t* batch);
 
-void SMT_BatchAddAttributefData(SMT_Batch* batch, unsigned int index, float* data, unsigned int size);
+int smtBatchAddAttribute(SMT_Batch_t* batch, unsigned int index, unsigned int size, int type);
+
+void smtBatchAddAttributeData(SMT_Batch_t* batch, unsigned int index, void* data, unsigned int length);
 
 #endif

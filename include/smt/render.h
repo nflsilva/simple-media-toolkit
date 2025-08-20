@@ -11,23 +11,25 @@
 typedef SMT_Color Color;
 typedef CVECVec2f Vec2f;
 
+struct SMT_Shader;
+
 /*!
  * Represents the current renderer context
  * @param spriteShader The selected shader for sprites
  * @param uniformLocations The map which stores the location for each uniform.
  */
 typedef struct SMT_Renderer {
-    SMT_Shader* spriteShader;
-    SMT_Batch* spriteBatch;
+    SMT_Shader_t spriteShader;
+    SMT_Batch_t spriteBatch;
 
 } SMT_Renderer;
 
-SMT_Renderer* smtRendererInit(SMT_Window* window);
+void smtRendererInitialise(SMT_Window* window, SMT_Renderer* renderer);
 
-void smtRendererDestroy();
+void smtRendererCleanup(SMT_Renderer* renderer);
 
-void smtRendererDraw();
+void smtRendererDraw(SMT_Renderer* renderer);
 
-void smtRenderSprite(SMT_Renderer* renderer, SMT_Sprite* sprite);
+void smtRenderDrawSprite(SMT_Renderer* renderer, SMT_Sprite_t* sprite);
 
 #endif

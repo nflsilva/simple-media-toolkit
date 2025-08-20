@@ -1,5 +1,6 @@
 #include "smt/shader.h"
 
+#include <assert.h>
 #include <glad/glad.h>
 
 void smtShaderGetShaderInfoLog(int glShader)
@@ -10,11 +11,11 @@ void smtShaderGetShaderInfoLog(int glShader)
     smtSetErrorMessage(message);
 }
 
-int smtShaderAddCode(SMT_Shader* shader, const unsigned char** code, int type)
+int smtShaderAddCode(SMT_Shader_t* shader, const unsigned char** code, int type)
 {
-    if(!shader || !shader->shaderList) return SMT_FAILURE;
+    if(!shader) return SMT_FAILURE;
 
-    int glShader = glCreateShader(type);
+    GLuint glShader = glCreateShader(type);
     if(!glShader) return SMT_FAILURE;
 
     glShaderSource(glShader, 1, (const GLchar* const*)code, NULL);
@@ -27,54 +28,55 @@ int smtShaderAddCode(SMT_Shader* shader, const unsigned char** code, int type)
         smtShaderGetShaderInfoLog(glShader);
         return SMT_FAILURE;
     }
-    int* glShaderPtr = (int*)malloc(sizeof(int));
-    *glShaderPtr = glShader;
 
     glAttachShader(shader->programId, glShader);
-    cutilListPushElement(shader->shaderList, glShaderPtr);
+    cutilListAppend(&shader->shaderList, &glShader);
     return SMT_SUCCESS;
 }
 
-SMT_Shader* smtShaderCreate(const unsigned char** vertexCode, const unsigned char** fragmentCode) 
+int smtShaderInitialise(const unsigned char** vertexCode, const unsigned char** fragmentCode, SMT_Shader_t* shader) 
 {
+    assert(shader);
     int programId = glCreateProgram();
     if(!programId)
     {
         smtSetErrorMessage("Program creation failed");
-        return NULL;
+        return SMT_FAILURE;
     }
 
-    SMT_Shader* shader = (SMT_Shader*)malloc(sizeof(SMT_Shader));
     shader->programId = programId;
-    shader->shaderList = cutilListCreate();
-    shader->uniformLocations = cutilHashTableCreate();
+    cutilListInitialise(&shader->shaderList, sizeof(GLuint));
+    cutilHashTableInitialise(&shader->uniformLocations, sizeof(GLuint));
 
-    if(!smtShaderAddCode(shader, vertexCode, GL_VERTEX_SHADER)) return NULL;
-    if(!smtShaderAddCode(shader, fragmentCode, GL_FRAGMENT_SHADER)) return NULL;
-    if(!smtShaderLinkProgram(shader)) return NULL;
+    if(!smtShaderAddCode(shader, vertexCode, GL_VERTEX_SHADER)) return SMT_FAILURE;
+    if(!smtShaderAddCode(shader, fragmentCode, GL_FRAGMENT_SHADER)) return SMT_FAILURE;
+    if(!smtShaderLinkProgram(shader)) return SMT_FAILURE;
 
-    return shader;
+    return SMT_SUCCESS;
 }
 
-void smtShaderDestroy(SMT_Shader* shader)
+void smtShaderCleanup(SMT_Shader_t* shader)
 {
-    if(!shader || !shader->shaderList || !shader->uniformLocations) return;
+    if(!shader) return;
 
     smtShaderUnbind();
 
-    for(int i = 0; i < shader->shaderList->size; i++)
-    {
-        int glShader = *(int*)cutilListPopElement(shader->shaderList);
+    CUTILListNode_t* node = shader->shaderList.head;
+    while (node != NULL) {
+        assert(node->data);
+        GLuint glShader = *((GLuint*)node->data);
         glDetachShader(shader->programId, glShader);
         glDeleteShader(glShader);
+        node = node->next;
     }
+
     glDeleteProgram(shader->programId);
-    cutilListDestroy(shader->shaderList);
-    cutilHashTableDestroy(shader->uniformLocations);
-    free(shader);
+    cutilListCleanup(&shader->shaderList);
+    cutilHashTableCleanup(&shader->uniformLocations);
+    memset(shader, 0, sizeof(SMT_Shader_t));
 }
 
-void smtShaderBind(SMT_Shader* shader)
+void smtShaderBind(SMT_Shader_t* shader)
 {
     if(!shader) return;
     glUseProgram(shader->programId);
@@ -85,7 +87,7 @@ void smtShaderUnbind()
     glUseProgram(0);
 }
 
-int smtShaderLinkProgram(SMT_Shader* shader)
+int smtShaderLinkProgram(SMT_Shader_t* shader)
 {
     GLint success;
 
@@ -107,12 +109,12 @@ int smtShaderLinkProgram(SMT_Shader* shader)
     return SMT_SUCCESS;
 }
 
-void smtShaderBindAttribute(SMT_Shader* shader, int attribute, const char* variableName)
+void smtShaderBindAttribute(SMT_Shader_t* shader, int attribute, const char* variableName)
 {
     glBindAttribLocation(shader->programId, attribute, variableName);
 }
 
-int smtShaderAddUniform(SMT_Shader* shader, const char* name)
+int smtShaderAddUniform(SMT_Shader_t* shader, const char* name)
 {
     GLuint location = glGetUniformLocation(shader->programId, name);
     if(location == GL_INVALID_VALUE || location == GL_INVALID_OPERATION || location == GL_INVALID_OPERATION)
@@ -120,13 +122,14 @@ int smtShaderAddUniform(SMT_Shader* shader, const char* name)
         //smtShaderGetProgramInfoLog(shader);
         return SMT_FAILURE;
     }
-    cutilHashTableAddElement(shader->uniformLocations, name, &location);
+    cutilHashTableSet(&shader->uniformLocations, name, &location);
     return SMT_SUCCESS;
 }
 
-int smtShaderSetUniformI(SMT_Shader* shader, const char* name, int value)
+int smtShaderSetUniformI(SMT_Shader_t* shader, const char* name, int value)
 {
-    GLuint location = *(GLuint*)cutilHashTableGetElement(shader->uniformLocations, name);
+    GLuint location;
+    cutilHashTableGet(&shader->uniformLocations, name, &location);
     if(!location)
     {
         smtSetErrorMessage("Location not found");
@@ -136,9 +139,10 @@ int smtShaderSetUniformI(SMT_Shader* shader, const char* name, int value)
     return SMT_SUCCESS;
 }
 
-int smtShaderSetUniformF(SMT_Shader* shader, const char* name, float value)
+int smtShaderSetUniformF(SMT_Shader_t* shader, const char* name, float value)
 {
-    GLuint location = *(GLuint*)cutilHashTableGetElement(shader->uniformLocations, name);
+    GLuint location;
+    cutilHashTableGet(&shader->uniformLocations, name, &location);
     if(!location)
     {
         smtSetErrorMessage("Location not found");
@@ -148,9 +152,10 @@ int smtShaderSetUniformF(SMT_Shader* shader, const char* name, float value)
     return SMT_SUCCESS;
 }
 
-int smtShaderSetUniformVec3F(SMT_Shader* shader, const char* name, float* values)
+int smtShaderSetUniformVec3F(SMT_Shader_t* shader, const char* name, float* values)
 {
-    GLuint location = *(GLuint*)cutilHashTableGetElement(shader->uniformLocations, name);
+    GLuint location;
+    cutilHashTableGet(&shader->uniformLocations, name, &location);
     if(!location)
     {
         smtSetErrorMessage("Location not found");
@@ -160,9 +165,10 @@ int smtShaderSetUniformVec3F(SMT_Shader* shader, const char* name, float* values
     return SMT_SUCCESS;
 }
 
-int smtShaderSetUniformVec4F(SMT_Shader* shader, const char* name, float* values)
+int smtShaderSetUniformVec4F(SMT_Shader_t* shader, const char* name, float* values)
 {
-    GLuint location = *(GLuint*)cutilHashTableGetElement(shader->uniformLocations, name);
+    GLuint location;
+    cutilHashTableGet(&shader->uniformLocations, name, &location);
     if(!location)
     {
         smtSetErrorMessage("Location not found");
@@ -172,9 +178,10 @@ int smtShaderSetUniformVec4F(SMT_Shader* shader, const char* name, float* values
     return SMT_SUCCESS;
 }
 
-int smtShaderSetUniformMat4F(SMT_Shader* shader, const char* name, float* values)
+int smtShaderSetUniformMat4F(SMT_Shader_t* shader, const char* name, float* values)
 {
-    GLuint location = *(GLuint*)cutilHashTableGetElement(shader->uniformLocations, name);
+    GLuint location;
+    cutilHashTableGet(&shader->uniformLocations, name, &location);
     if(!location)
     {
         smtSetErrorMessage("Location not found");

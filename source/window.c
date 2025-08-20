@@ -5,14 +5,14 @@ static void error_callback(int error, const char* description)
     printf("Error: %d : %s\n", error, description);
 }
 
-SMT_Window* smtWindowOpen(int width, int height, const char* title) 
+void smtWindowOpen(int width, int height, const char* title, SMT_Window* window) 
 {
     glfwSetErrorCallback(error_callback);
 
     if (!glfwInit())
     {
         smtSetErrorMessage("SMT: failed to init glfw");
-        return NULL;
+        return;
     }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
@@ -22,13 +22,9 @@ SMT_Window* smtWindowOpen(int width, int height, const char* title)
     {
         glfwTerminate();
         smtSetErrorMessage("SMT: failed to create glfw window");
-        return NULL;
+        return;
     }
-
-    SMT_Window* window = (SMT_Window*)malloc(sizeof(SMT_Window));
     window->glfwWindow = glfwWindow;
-
-    return window;
 }
 
 int smtWindowShouldClose(SMT_Window* window) 
@@ -37,10 +33,11 @@ int smtWindowShouldClose(SMT_Window* window)
     return SMT_FALSE;
 }
 
-void smtWindowDestroy(SMT_Window* window) 
+void smtWindowCleanup(SMT_Window* window) 
 {
-    if(!window) return;
+    if(!window || !window->glfwWindow) return;
     glfwDestroyWindow(window->glfwWindow);
+    memset(window, 0, sizeof(SMT_Window));
 }
 
 void smtWindowUpdate(SMT_Window* window) 

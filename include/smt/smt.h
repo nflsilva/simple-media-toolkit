@@ -5,22 +5,9 @@
 #include <stdio.h>
 #include <string.h>
 
-/*
- *  Semantic sugar for the number `1`.
- */
-#define SMT_TRUE 1
-/*
- *  Semantic sugar for the number `0`.
- */
-#define SMT_FALSE 0
-/*
- *  Semantic sugar for the number `1`.
- */
-#define SMT_SUCCESS 1
-/*
- *  Semantic sugar for the number `0`.
- */
-#define SMT_FAILURE 0
+#include "smt/utils.h"
+
+struct SMT_Sprite;
 
 /*!
  * Gets the last error message from SMT.
@@ -42,5 +29,16 @@ void smtSetErrorMessage(const char* message);
  * @returns `SMT_SUCCESS` if successfull. `SMT_FAILURE` if an error occurred
  */
 int smtInit(int width, int height, const char* title);
+
+/*!
+ * Destroys SMT.
+ */
+void smtDestroy();
+
+int smtShouldClose();
+
+void smtUpdate();
+
+void smtDrawSprite(struct SMT_Sprite* sprite);
 
 #endif

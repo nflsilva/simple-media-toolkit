@@ -15,7 +15,7 @@ typedef struct SMT_Color {
 } SMT_Color;
 
 /*!
- * Creates a new RGBA color.
+ * Initialises a new RGBA color.
  * @param r The value of red.
  * @param g The value of green.
  * @param b The value of blue.
@@ -23,6 +23,6 @@ typedef struct SMT_Color {
  * @return A pointer to the new color.
  * @warning Input values will be clipped to [`0.0`, `1.0`]
  */
-SMT_Color* smtColorCreate(float r, float g, float b, float a);
+void smtColorInitialise(float r, float g, float b, float a, SMT_Color* color);
 
 #endif

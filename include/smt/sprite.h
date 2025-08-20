@@ -1,19 +1,27 @@
+#ifndef _SMT_SPRITE_H
+#define _SMT_SPRITE_H
+
 #include <glad/glad.h>
 
 #include "cvec/vec2.h"
-#include "smt/color.h"
-#include "smt/shader.h"
+
+struct SMT_Shader;
+struct SMT_Batch;
 
 typedef struct SMT_Sprite {
     GLuint textureId;
-} SMT_Sprite;
+} SMT_Sprite_t;
 
-SMT_Sprite* smtSpriteCreateFromFile(const char* path);
+void smtSpriteInitialiseFromFile(const char* path, SMT_Sprite_t* sprite);
 
-void smtSpriteDestroy(SMT_Sprite* sprite);
+void smtSpriteCleanup(SMT_Sprite_t* sprite);
 
 /*!
  * Creates a shader for sprites.
  * @returns A pointer to the newly created shader. `NULL` if an error occurred.
  */
-SMT_Shader* smtShaderCreateSpiteShader();
+void smtSpriteInitialiseSpiteShader(struct SMT_Shader* shader);
+
+void smtSpriteInitialiseSpriteBatch(struct SMT_Batch* batch);
+
+#endif

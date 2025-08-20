@@ -23,7 +23,7 @@ typedef struct SMT_Window {
  * @returns `SMT_SUCCESS` if successfull. `SMT_FAILURE` if an error occurred
  * or the window is already opened.
  */
-SMT_Window* smtWindowOpen(int width, int height, const char* title);
+void smtWindowOpen(int width, int height, const char* title, SMT_Window* window);
 
 /*!
  *  Indicates if the applicatin window will close.
@@ -34,7 +34,7 @@ int smtWindowShouldClose(SMT_Window* window);
 /*!
  *  Destroys window context.
  */
-void smtWindowDestroy(SMT_Window* window);
+void smtWindowCleanup(SMT_Window* window);
 
 /*!
  *  Updates window context.

@@ -3,8 +3,8 @@
 #include "smt/window.h"
 #include "smt/render.h"
 
-static SMT_Window* window = NULL;
-static SMT_Renderer* renderer = NULL;
+static SMT_Window window;
+static SMT_Renderer renderer;
 static int smtErrorMessageSize = 0;
 char *smtErrorMessage = NULL;
 
@@ -29,13 +29,27 @@ void smtSetErrorMessage(const char* message)
 }
 
 int smtInit(int width, int height, const char* title) {
-    window = smtWindowOpen(width, height, title);
-    renderer = smtRendererInit(window);
+
+    smtWindowOpen(width, height, title, &window);
+    smtRendererInitialise(&window, &renderer);
 
     return SMT_SUCCESS;
 }
 
-int smtDestroy() {
-    smtRendererDestroy();
-    smtWindowDestroy(window);
+void smtDestroy() {
+    smtRendererCleanup(&renderer);
+    smtWindowCleanup(&window);
+}
+
+int smtShouldClose() {
+    return smtWindowShouldClose(&window);
+}
+
+void smtUpdate() {
+    smtRendererDraw(&renderer);
+    smtWindowUpdate(&window);
+}
+
+void smtDrawSprite(SMT_Sprite_t* sprite) {
+    smtRenderDrawSprite(&renderer, sprite);
 }

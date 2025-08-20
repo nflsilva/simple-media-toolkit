@@ -1,9 +1,8 @@
 #ifndef _SMT_SHADER_H
 #define _SMT_SHADER_H
 
-#include "cutil/hashTable.h"
-#include "cutil/list.h"
-#include "cutil/filesystem.h"
+#include <cutil/hash_table.h>
+#include <cutil/list.h>
 #include "smt/smt.h"
 
 /*!
@@ -14,29 +13,29 @@
  */
 typedef struct SMT_Shader {
     int programId;
-    CUTILList* shaderList;
-    CUTILHashTable* uniformLocations;
-} SMT_Shader;
+    CUTILList_t shaderList;
+    CUTILHashTable_t uniformLocations;
+} SMT_Shader_t;
 
 /*!
- * Creates a new shader program to run on the GPU.
+ * Initialises a new shader program to run on the GPU.
  * @param vertexCode The code for the vertex shader program.
  * @param fragmentCode The code for the fragment shader program.
  * @returns A pointer to the newly created shader. `NULL` if an error occurred.
  */
-SMT_Shader* smtShaderCreate(const unsigned char** vertexCode, const unsigned char** fragmentCode);
+int smtShaderInitialise(const unsigned char** vertexCode, const unsigned char** fragmentCode, SMT_Shader_t* shader);
 
 /*!
  * Destroys and cleans up a given shader.
  * @param shader The shader to destroy.
  */
-void smtShaderDestroy(SMT_Shader* shader);
+void smtShaderCleanup(SMT_Shader_t* shader);
 
 /*!
  * Binds a given shader to be used.
  * @param shader The shader to bind.
  */
-void smtShaderBind(SMT_Shader* shader);
+void smtShaderBind(SMT_Shader_t* shader);
 
 /*!
  * Unbinds all shaders
@@ -48,7 +47,7 @@ void smtShaderUnbind();
  * @param shader The shader to link.
  * @return 'SMT_SUCCESS' if everything when well. 'SMT_FAILURE' otherwise.
  */
-int smtShaderLinkProgram(SMT_Shader* shader);
+int smtShaderLinkProgram(SMT_Shader_t* shader);
 
 /*!
  * Binds a shader variable to a specific attribute
@@ -56,7 +55,7 @@ int smtShaderLinkProgram(SMT_Shader* shader);
  * @param attribute The position to bind the variable
  * @param variableName The shader variable name
  */
-void smtShaderBindAttribute(SMT_Shader* shader, int attribute, const char* variableName);
+void smtShaderBindAttribute(SMT_Shader_t* shader, int attribute, const char* variableName);
 
 /*!
  * Creates and stores a shader uniform location
@@ -64,7 +63,7 @@ void smtShaderBindAttribute(SMT_Shader* shader, int attribute, const char* varia
  * @param name The uniform name
  * @return 'SMT_SUCCESS' if everything when well. 'SMT_FAILURE' otherwise. 
  */
-int smtShaderAddUniform(SMT_Shader* shader, const char* name);
+int smtShaderAddUniform(SMT_Shader_t* shader, const char* name);
 
 /*!
  * Sets the value for a specific shader uniform of type `int`
@@ -73,7 +72,7 @@ int smtShaderAddUniform(SMT_Shader* shader, const char* name);
  * @param value The value to set
  * @return 'SMT_SUCCESS' if everything when well. 'SMT_FAILURE' otherwise. 
  */
-int smtShaderSetUniformI(SMT_Shader* shader, const char* name, int value);
+int smtShaderSetUniformI(SMT_Shader_t* shader, const char* name, int value);
 
 /*!
  * Sets the value for a specific shader uniform of type ´float´
@@ -82,7 +81,7 @@ int smtShaderSetUniformI(SMT_Shader* shader, const char* name, int value);
  * @param value The value to set
  * @return 'SMT_SUCCESS' if everything when well. 'SMT_FAILURE' otherwise. 
  */
-int smtShaderSetUniformF(SMT_Shader* shader, const char* name, float value);
+int smtShaderSetUniformF(SMT_Shader_t* shader, const char* name, float value);
 
 /*!
  * Sets the value for a specific shader uniform of type `vec3`
@@ -91,7 +90,7 @@ int smtShaderSetUniformF(SMT_Shader* shader, const char* name, float value);
  * @param value A pointer to the list of values to set
  * @return 'SMT_SUCCESS' if everything when well. 'SMT_FAILURE' otherwise. 
  */
-int smtShaderSetUniformVec3F(SMT_Shader* shader, const char* name, float* values);
+int smtShaderSetUniformVec3F(SMT_Shader_t* shader, const char* name, float* values);
 
 /*!
  * Sets the value for a specific shader uniform of type `vec4`
@@ -100,7 +99,7 @@ int smtShaderSetUniformVec3F(SMT_Shader* shader, const char* name, float* values
  * @param value A pointer to the list of values to set
  * @return 'SMT_SUCCESS' if everything when well. 'SMT_FAILURE' otherwise. 
  */
-int smtShaderSetUniformVec4F(SMT_Shader* shader, const char* name, float* values);
+int smtShaderSetUniformVec4F(SMT_Shader_t* shader, const char* name, float* values);
 
 /*!
  * Sets the value for a specific shader uniform of type `mat4`
@@ -109,6 +108,6 @@ int smtShaderSetUniformVec4F(SMT_Shader* shader, const char* name, float* values
  * @param value A pointer to the list of values to set
  * @return 'SMT_SUCCESS' if everything when well. 'SMT_FAILURE' otherwise. 
  */
-int smtShaderSetUniformMat4F(SMT_Shader* shader, const char* name, float* values);
+int smtShaderSetUniformMat4F(SMT_Shader_t* shader, const char* name, float* values);
 
 #endif
