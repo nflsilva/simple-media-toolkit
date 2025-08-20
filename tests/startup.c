@@ -15,6 +15,7 @@ int main() {
 
     while(!smtShouldClose()) {
         smtDrawSprite(&sprite);
+        smtDrawSprite(&sprite);
         smtUpdate();
     }
 

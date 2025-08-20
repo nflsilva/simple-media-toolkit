@@ -10,6 +10,9 @@
 #include "vertex_shader.h"
 #include "fragment_shader.h"
 
+static const int POSITION_INDEX = 0;
+static const int TEXTURE_COORDS_INDEX = 1;
+
 void smtSpriteInitialiseFromFile(const char* path, SMT_Sprite_t* sprite) 
 {
     assert(sprite);
@@ -58,8 +61,10 @@ void smtSpriteCleanup(SMT_Sprite_t* sprite)
 void smtSpriteInitialiseSpiteShader(struct SMT_Shader* shader)
 {
     assert(shader);
+
     const unsigned char* vertexShaderCode = vertex_shader;
     assert(vertexShaderCode);
+
     const unsigned char* fragmentShaderCode = fragment_shader;
     assert(fragmentShaderCode);
     
@@ -68,14 +73,51 @@ void smtSpriteInitialiseSpiteShader(struct SMT_Shader* shader)
     smtShaderAddUniform(shader, "uni_modelMatrix");
     smtShaderAddUniform(shader, "uni_viewMatrix");
     smtShaderAddUniform(shader, "uni_modelMatrix");
+    smtShaderAddUniform(shader, "uni_sprite");
 }
 
 void smtSpriteInitialiseSpriteBatch(struct SMT_Batch* batch) 
 {
     assert(batch);
-    const int POSITION_INDEX = 0;
-    const int COLOR_INDEX = 1;
-    smtBatchInitialise(100, 4, batch);
+
+    smtBatchInitialise(100, 4, GL_QUADS, batch);
     smtBatchAddAttribute(batch, POSITION_INDEX, 3, GL_FLOAT);
-    smtBatchAddAttribute(batch, COLOR_INDEX, 4, GL_FLOAT);
+    smtBatchAddAttribute(batch, TEXTURE_COORDS_INDEX, 2, GL_FLOAT);
+}
+
+void smtSpriteAddToBatch(struct SMT_Batch* batch, SMT_Sprite_t* sprite) {
+    assert(batch);
+
+    float positions[] = {
+        //   X      Y     Z
+        -0.5f,  0.5f, 0.0f,             // Top left
+        -0.5f, -0.5f, 0.0f,             // Bottom left
+         0.5f, -0.5f, 0.0f,             // Bottom right
+         0.5f,  0.5f, 0.0f              // Top right
+    };
+
+    float colors[] = {
+        //   R      G     B     A
+         0.0f,  0.0f, 1.0f, 1.0f,       // Top left
+         0.0f,  1.0f, 0.0f, 1.0f,       // Bottom left
+         1.0f,  0.0f, 0.0f, 1.0f,       // Bottom right
+         1.0f,  0.0f, 1.0f, 1.0f        // Top right
+    };
+
+    float texture_coords[] = {
+        //   U      V
+         0.0f,  0.0f,       // Top left
+         0.0f,  1.0f,       // Bottom left
+         1.0f,  1.0f,       // Bottom right
+         1.0f,  0.0f        // Top right
+    };
+
+    smtBatchAddAttributeData(batch, POSITION_INDEX, positions);
+    smtBatchAddAttributeData(batch, TEXTURE_COORDS_INDEX, texture_coords);
+
+    batch->nEntities++;
+
+    // hack
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, sprite->textureId);
 }

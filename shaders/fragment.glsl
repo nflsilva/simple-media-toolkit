@@ -1,8 +1,10 @@
 #version 330 core
 
-varying vec4 fi_color;
+in vec2 fi_textureCoords;
+
+uniform sampler2D uni_sprite;
 
 void main()
 {
-    gl_FragColor = fi_color;  
+    gl_FragColor = texture(uni_sprite, fi_textureCoords);  
 };

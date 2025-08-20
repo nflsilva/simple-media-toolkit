@@ -25,18 +25,15 @@ typedef struct SMT_BatchAttribute {
  */
 typedef struct SMT_Batch {
     GLuint glVAO;
-    unsigned int nEntities;
-    unsigned int nVertexPerEntity;
-    unsigned int maxEntities;
+    unsigned int nEntities, nVertexPerEntity, maxEntities, type;
     CUTILList_t attributes;
-
     SMT_BatchAttribute_t* indexBuffer;
 } SMT_Batch_t;
 
 /*!
  * Creates a new entities batch.
  */
-void smtBatchInitialise(unsigned int maxEntities, unsigned int nVertexPerEntity, SMT_Batch_t* batch);
+void smtBatchInitialise(unsigned int maxEntities, unsigned int nVertexPerEntity, unsigned int type, SMT_Batch_t* batch);
 
 void smtBatchCleanup(SMT_Batch_t* batch);
 
@@ -48,6 +45,6 @@ void smtBatchResetBuffers(SMT_Batch_t* batch);
 
 int smtBatchAddAttribute(SMT_Batch_t* batch, unsigned int index, unsigned int size, int type);
 
-void smtBatchAddAttributeData(SMT_Batch_t* batch, unsigned int index, void* data, unsigned int length);
+void smtBatchAddAttributeData(SMT_Batch_t* batch, unsigned int index, void* data);
 
 #endif

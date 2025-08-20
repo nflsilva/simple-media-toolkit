@@ -24,4 +24,6 @@ void smtSpriteInitialiseSpiteShader(struct SMT_Shader* shader);
 
 void smtSpriteInitialiseSpriteBatch(struct SMT_Batch* batch);
 
+void smtSpriteAddToBatch(struct SMT_Batch* batch, SMT_Sprite_t* sprite);
+
 #endif

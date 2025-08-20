@@ -80,6 +80,9 @@ void smtShaderBind(SMT_Shader_t* shader)
 {
     if(!shader) return;
     glUseProgram(shader->programId);
+
+    // hack
+    glUniform1i(glGetUniformLocation(shader->programId, "uni_shader"), 0);
 }
 
 void smtShaderUnbind()

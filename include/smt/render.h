@@ -30,6 +30,4 @@ void smtRendererCleanup(SMT_Renderer* renderer);
 
 void smtRendererDraw(SMT_Renderer* renderer);
 
-void smtRenderDrawSprite(SMT_Renderer* renderer, SMT_Sprite_t* sprite);
-
 #endif

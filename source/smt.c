@@ -51,5 +51,6 @@ void smtUpdate() {
 }
 
 void smtDrawSprite(SMT_Sprite_t* sprite) {
-    smtRenderDrawSprite(&renderer, sprite);
+    smtSpriteAddToBatch(&renderer.spriteBatch, sprite);
+    
 }
