@@ -21,6 +21,7 @@ struct SMT_Shader;
 typedef struct SMT_Renderer {
     SMT_Shader_t spriteShader;
     SMT_Batch_t spriteBatch;
+    CUTILHashTable_t filePerTexture;
 
 } SMT_Renderer;
 

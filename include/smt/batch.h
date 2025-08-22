@@ -9,6 +9,7 @@
 
 #define SMT_BATCH_MAX_ATTRIBUTES 20
 #define SMT_BATCH_MAX_ENTITIES 2000
+#define SMT_BATCH_MAX_TEXTURES 16
 
 /*!
  * 
@@ -26,8 +27,9 @@ typedef struct SMT_BatchAttribute {
 typedef struct SMT_Batch {
     GLuint glVAO;
     unsigned int nEntities, nVertexPerEntity, maxEntities, type;
-    CUTILList_t attributes;
-    SMT_BatchAttribute_t* indexBuffer;
+    SMT_BatchAttribute_t attributes[SMT_BATCH_MAX_ATTRIBUTES];
+    GLuint textures[SMT_BATCH_MAX_TEXTURES];
+    unsigned int nAttributes, nTextures;
 } SMT_Batch_t;
 
 /*!

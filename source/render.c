@@ -11,6 +11,7 @@ void smtRendererInitialise(SMT_Window* window, SMT_Renderer* renderer)
 
     smtSpriteInitialiseSpiteShader(&renderer->spriteShader);
     smtSpriteInitialiseSpriteBatch(&renderer->spriteBatch);
+    cutilHashTableInitialise(&renderer->filePerTexture, sizeof(GLuint));
 }
 
 void smtRendererCleanup(SMT_Renderer* renderer)
@@ -27,6 +28,5 @@ void smtRendererDraw(SMT_Renderer* renderer)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-    smtShaderBind(&renderer->spriteShader);
-    smtBatchDraw(&renderer->spriteBatch);
+    smtSpriteDrawBatches(renderer);
 }

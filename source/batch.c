@@ -13,15 +13,11 @@ void smtBatchAttributeCleanup(SMT_BatchAttribute_t* attribute)
 void smtBatchInitialise(unsigned int maxEntities, unsigned int nVertexPerEntity, unsigned int type, SMT_Batch_t* batch)
 {
     assert(batch);
+    memset(batch, 0, sizeof(SMT_Batch_t));
     glGenVertexArrays(1, &batch->glVAO);
-    batch->nEntities = 0;
     batch->maxEntities = maxEntities;
     batch->nVertexPerEntity = nVertexPerEntity;
     batch->type = type;
-    cutilListInitialise(&batch->attributes, sizeof(SMT_BatchAttribute_t));
-
-    // TODO: will we need this? 🤔
-    batch->indexBuffer = NULL;
 }
 
 void smtBatchCleanup(SMT_Batch_t* batch)
@@ -29,33 +25,35 @@ void smtBatchCleanup(SMT_Batch_t* batch)
     if(!batch) return;
     glDeleteVertexArrays(1, &batch->glVAO);
 
-    CUTILListNode_t *node = batch->attributes.head;
-    while(node) {
-        smtBatchAttributeCleanup(node->data);
-        node = node->next;
+    for(unsigned int i = 0; i < batch->nAttributes; i++) {
+        smtBatchAttributeCleanup(&batch->attributes[i]);
     }
-    cutilListCleanup(&batch->attributes);
+
     memset(batch, 0, sizeof(SMT_Batch_t));
 }
 
 void smtBatchDraw(SMT_Batch_t* batch) {
     assert(batch);
-    CUTILListNode_t *node = batch->attributes.head;
-    while(node) {
-        SMT_BatchAttribute_t* attribute = node->data;
+
+    for(unsigned int  i = 0; i < batch->nAttributes; i++) {
+        SMT_BatchAttribute_t* attribute = &batch->attributes[i];
         assert(attribute);
 
         glBindBuffer(GL_ARRAY_BUFFER, attribute->glVBO);
         glBufferData(GL_ARRAY_BUFFER, attribute->bufferLength * sizeof(attribute->type), attribute->buffer, GL_DYNAMIC_DRAW);
         glVertexAttribPointer(attribute->index, attribute->size, attribute->type, GL_FALSE, 0, (void*)0);
-        glEnableVertexAttribArray(attribute->index);
-
-        node = node->next;
+        glEnableVertexAttribArray(attribute->index); 
     }
+
+    for (unsigned int i = 0; i < batch->nTextures; i++) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, batch->textures[i]);
+    }
+
     glBindVertexArray(batch->glVAO);
     glDrawArrays(batch->type, 0, batch->nEntities * batch->nVertexPerEntity);
-
-    //smtBatchUnbind(batch);
+    
+    smtBatchUnbind(batch);
     smtBatchResetBuffers(batch);
 }
 
@@ -63,23 +61,21 @@ void smtBatchUnbind(SMT_Batch_t* batch) {
     assert(batch);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-    CUTILListNode_t *node = batch->attributes.head;
-    while(node) {
-        SMT_BatchAttribute_t* attribute = node->data;
-        glDisableVertexAttribArray(attribute->index);
-        node = node->next;
+
+    for(unsigned int  i = 0; i < batch->nAttributes; i++) {
+        glDisableVertexAttribArray(batch->attributes[i].index);; 
     }
 }
 
 void smtBatchResetBuffers(SMT_Batch_t* batch) {
     assert(batch);
-    CUTILListNode_t *node = batch->attributes.head;
-    while(node) {
-        SMT_BatchAttribute_t* attribute = node->data;
-        attribute->bufferLength = 0;
-        node = node->next;
+
+    for(unsigned int  i = 0; i < batch->nAttributes; i++) {
+        batch->attributes[i].bufferLength = 0; 
     }
+
     batch->nEntities = 0;
+    batch->nTextures = 0;
 }
 
 static void smtBatchAttributeInitialise(SMT_Batch_t* batch, unsigned int index, unsigned int size, int type, SMT_BatchAttribute_t* attribute)
@@ -105,27 +101,20 @@ static void smtBatchAttributeInitialise(SMT_Batch_t* batch, unsigned int index, 
 int smtBatchAddAttribute(SMT_Batch_t* batch, unsigned int index, unsigned int size, int type)
 {
     glBindVertexArray(batch->glVAO);
-
-    SMT_BatchAttribute_t* attribute = (SMT_BatchAttribute_t*)malloc(sizeof(SMT_BatchAttribute_t));
-    smtBatchAttributeInitialise(batch, index, size, type, attribute);
-    if(!attribute) return SMT_FAILURE;
-
-    cutilListAppend(&batch->attributes, attribute);
+    smtBatchAttributeInitialise(batch, index, size, type, &batch->attributes[batch->nAttributes]);
+    batch->nAttributes++;
     return SMT_SUCCESS;
 }
 
 void smtBatchAddAttributeData(SMT_Batch_t* batch, unsigned int index, void* data)
 {
-    if(!batch || index > SMT_BATCH_MAX_ATTRIBUTES || batch->attributes.size == 0) return;
+    if(!batch || index > SMT_BATCH_MAX_ATTRIBUTES || batch->nAttributes == 0) return;
 
-    CUTILListNode_t* node = batch->attributes.head;
-    while (node != NULL) {
-        if(((SMT_BatchAttribute_t*)(node->data))->index == index) break;
-        node = node->next;
+    SMT_BatchAttribute_t* attribute = NULL;
+    for(unsigned int  i = 0; i < batch->nAttributes; i++) {
+        attribute = &batch->attributes[i];
+        if(attribute->index == index) break;
     }
-
-    assert(node);
-    SMT_BatchAttribute_t* attribute = (SMT_BatchAttribute_t*)node->data;
 
     memcpy(attribute->buffer + sizeof(attribute->type) * attribute->bufferLength, data, sizeof(attribute->type) * batch->nVertexPerEntity * attribute->size);
     attribute->bufferLength += batch->nVertexPerEntity * attribute->size;

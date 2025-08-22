@@ -7,6 +7,7 @@
 
 struct SMT_Shader;
 struct SMT_Batch;
+struct SMT_Renderer;
 
 typedef struct SMT_Sprite {
     GLuint textureId;
@@ -25,5 +26,7 @@ void smtSpriteInitialiseSpiteShader(struct SMT_Shader* shader);
 void smtSpriteInitialiseSpriteBatch(struct SMT_Batch* batch);
 
 void smtSpriteAddToBatch(struct SMT_Batch* batch, SMT_Sprite_t* sprite);
+
+void smtSpriteDrawBatches(struct SMT_Renderer* renderer);
 
 #endif

@@ -4,7 +4,7 @@
 #include "smt/render.h"
 
 static SMT_Window window;
-static SMT_Renderer renderer;
+SMT_Renderer renderer;
 static int smtErrorMessageSize = 0;
 char *smtErrorMessage = NULL;
 
@@ -52,5 +52,4 @@ void smtUpdate() {
 
 void smtDrawSprite(SMT_Sprite_t* sprite) {
     smtSpriteAddToBatch(&renderer.spriteBatch, sprite);
-    
 }

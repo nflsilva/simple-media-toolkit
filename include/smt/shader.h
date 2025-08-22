@@ -14,7 +14,6 @@
 typedef struct SMT_Shader {
     int programId;
     CUTILList_t shaderList;
-    CUTILHashTable_t uniformLocations;
 } SMT_Shader_t;
 
 /*!
@@ -56,58 +55,5 @@ int smtShaderLinkProgram(SMT_Shader_t* shader);
  * @param variableName The shader variable name
  */
 void smtShaderBindAttribute(SMT_Shader_t* shader, int attribute, const char* variableName);
-
-/*!
- * Creates and stores a shader uniform location
- * @param shader The shader
- * @param name The uniform name
- * @return 'SMT_SUCCESS' if everything when well. 'SMT_FAILURE' otherwise. 
- */
-int smtShaderAddUniform(SMT_Shader_t* shader, const char* name);
-
-/*!
- * Sets the value for a specific shader uniform of type `int`
- * @param shader The shader
- * @param name The uniform name
- * @param value The value to set
- * @return 'SMT_SUCCESS' if everything when well. 'SMT_FAILURE' otherwise. 
- */
-int smtShaderSetUniformI(SMT_Shader_t* shader, const char* name, int value);
-
-/*!
- * Sets the value for a specific shader uniform of type ´float´
- * @param shader The shader
- * @param name The uniform name
- * @param value The value to set
- * @return 'SMT_SUCCESS' if everything when well. 'SMT_FAILURE' otherwise. 
- */
-int smtShaderSetUniformF(SMT_Shader_t* shader, const char* name, float value);
-
-/*!
- * Sets the value for a specific shader uniform of type `vec3`
- * @param shader The shader
- * @param name The uniform name
- * @param value A pointer to the list of values to set
- * @return 'SMT_SUCCESS' if everything when well. 'SMT_FAILURE' otherwise. 
- */
-int smtShaderSetUniformVec3F(SMT_Shader_t* shader, const char* name, float* values);
-
-/*!
- * Sets the value for a specific shader uniform of type `vec4`
- * @param shader The shader
- * @param name The uniform name
- * @param value A pointer to the list of values to set
- * @return 'SMT_SUCCESS' if everything when well. 'SMT_FAILURE' otherwise. 
- */
-int smtShaderSetUniformVec4F(SMT_Shader_t* shader, const char* name, float* values);
-
-/*!
- * Sets the value for a specific shader uniform of type `mat4`
- * @param shader The shader
- * @param name The uniform name
- * @param value A pointer to the list of values to set
- * @return 'SMT_SUCCESS' if everything when well. 'SMT_FAILURE' otherwise. 
- */
-int smtShaderSetUniformMat4F(SMT_Shader_t* shader, const char* name, float* values);
 
 #endif
