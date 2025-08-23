@@ -12,6 +12,7 @@ void smtRendererInitialise(SMT_Window* window, SMT_Renderer* renderer)
     smtSpriteInitialiseSpiteShader(&renderer->spriteShader);
     smtSpriteInitialiseSpriteBatch(&renderer->spriteBatch);
     cutilHashTableInitialise(&renderer->filePerTexture, sizeof(GLuint));
+    cvecMat4FSetOrthographicProjection(&renderer->projection, -1.0f, 1.0f, 0.0f, 5.0f, 5.0f, 0.0f);
 }
 
 void smtRendererCleanup(SMT_Renderer* renderer)

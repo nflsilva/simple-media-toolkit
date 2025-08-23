@@ -13,8 +13,8 @@ flat out int fi_textureIndex;
 
 void main()
 {
-    //vec4 worldPosition = ui_modelMatrix * vec4(vi_position, 1.0);
-    gl_Position = vec4(vi_position, 1.0); //ui_projectionMatrix * ui_viewMatrix * worldPosition;
+    vec4 worldPosition = vec4(vi_position, 1.0);
+    gl_Position = uni_projectionMatrix * worldPosition;
     fi_textureCoords = vi_textureCoords;
     fi_textureIndex = int(vi_textureIndex);
 };

@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 
-#include "cvec/vec2.h"
+#include <cvec/vec2.h>
 
 struct SMT_Shader;
 struct SMT_Batch;

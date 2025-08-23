@@ -19,6 +19,9 @@ static const int MAX_SPRITES_PER_BATCH = 1000;
 
 const int spriteShaderSamplers[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ,10, 11, 12, 13, 14, 15 };
 const char* spriteShaderTexturesUniform = "uni_textures";
+const char* spriteShaderProjectionMatrixUniform = "uni_projectionMatrix";
+const char* spriteShaderModelMatrixUniform = "uni_modelMatrix";
+const char* spriteShaderViewMatrixUniform = "uni_viewMatrix";
 
 extern SMT_Renderer renderer;
 
@@ -161,7 +164,13 @@ void smtSpriteAddToBatch(struct SMT_Batch* batch, SMT_Sprite_t* sprite) {
 void smtSpriteDrawBatches(struct SMT_Renderer* renderer) {
 
     smtShaderBind(&renderer->spriteShader);
-    glUniform1iv(glGetUniformLocation(renderer->spriteShader.programId, spriteShaderTexturesUniform), 16, spriteShaderSamplers);
+    GLuint loc = glGetUniformLocation(renderer->spriteShader.programId, spriteShaderTexturesUniform);
+    glUniform1iv(loc, 16, spriteShaderSamplers);
+
+    loc = glGetUniformLocation(renderer->spriteShader.programId, spriteShaderProjectionMatrixUniform);
+    //loc = glGetUniformLocation(renderer->spriteShader.programId, spriteShaderModelMatrixUniform);
+    //loc = glGetUniformLocation(renderer->spriteShader.programId, spriteShaderViewMatrixUniform);
+    glUniformMatrix4fv(loc, 1, GL_FALSE, (GLfloat*)&renderer->projection.data);
 
     smtBatchDraw(&renderer->spriteBatch);
 }
