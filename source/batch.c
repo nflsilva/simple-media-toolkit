@@ -39,10 +39,11 @@ void smtBatchDraw(SMT_Batch_t* batch) {
         SMT_BatchAttribute_t* attribute = &batch->attributes[i];
         assert(attribute);
 
-        glBindBuffer(GL_ARRAY_BUFFER, attribute->glVBO);
-        glBufferData(GL_ARRAY_BUFFER, attribute->bufferLength * sizeof(attribute->type), attribute->buffer, GL_DYNAMIC_DRAW);
-        glVertexAttribPointer(attribute->index, attribute->size, attribute->type, GL_FALSE, 0, (void*)0);
         glEnableVertexAttribArray(attribute->index); 
+        glBindBuffer(GL_ARRAY_BUFFER, attribute->glVBO);
+        glVertexAttribPointer(attribute->index, attribute->size, attribute->type, GL_FALSE, 0, (void*)0);
+        glVertexAttribDivisor(attribute->index, attribute->divisor);
+        glBufferData(GL_ARRAY_BUFFER, attribute->bufferLength * sizeof(attribute->type), attribute->buffer, GL_DYNAMIC_DRAW);
     }
 
     for (unsigned int i = 0; i < batch->nTextures; i++) {
@@ -52,7 +53,7 @@ void smtBatchDraw(SMT_Batch_t* batch) {
 
     glBindVertexArray(batch->glVAO);
     glDrawArrays(batch->type, 0, batch->nEntities * batch->nVertexPerEntity);
-    
+        
     smtBatchUnbind(batch);
     smtBatchResetBuffers(batch);
 }
@@ -78,7 +79,7 @@ void smtBatchResetBuffers(SMT_Batch_t* batch) {
     batch->nTextures = 0;
 }
 
-static void smtBatchAttributeInitialise(SMT_Batch_t* batch, unsigned int index, unsigned int size, int type, SMT_BatchAttribute_t* attribute)
+static void smtBatchAttributeInitialise(SMT_Batch_t* batch, unsigned int index, unsigned int size, int type, int divisor, SMT_BatchAttribute_t* attribute)
 {
     assert(attribute);
     glBindVertexArray(batch->glVAO);
@@ -94,21 +95,23 @@ static void smtBatchAttributeInitialise(SMT_Batch_t* batch, unsigned int index, 
     attribute->index = index;
     attribute->size = size;
     attribute->type = type;
+    attribute->divisor = divisor;
     attribute->bufferLength = 0;
     attribute->buffer = malloc(sizeof(type) * batch->maxEntities * batch->nVertexPerEntity * size);
 }
 
-int smtBatchAddAttribute(SMT_Batch_t* batch, unsigned int index, unsigned int size, int type)
+int smtBatchAddAttribute(SMT_Batch_t* batch, unsigned int index, unsigned int size, int type, int divisor)
 {
     glBindVertexArray(batch->glVAO);
-    smtBatchAttributeInitialise(batch, index, size, type, &batch->attributes[batch->nAttributes]);
+    smtBatchAttributeInitialise(batch, index, size, type, divisor, &batch->attributes[batch->nAttributes]);
     batch->nAttributes++;
     return SMT_SUCCESS;
 }
 
 void smtBatchAddAttributeData(SMT_Batch_t* batch, unsigned int index, void* data)
 {
-    if(!batch || index > SMT_BATCH_MAX_ATTRIBUTES || batch->nAttributes == 0) return;
+    assert(batch);
+    if(index > SMT_BATCH_MAX_ATTRIBUTES || batch->nAttributes == 0) return;
 
     SMT_BatchAttribute_t* attribute = NULL;
     for(unsigned int  i = 0; i < batch->nAttributes; i++) {

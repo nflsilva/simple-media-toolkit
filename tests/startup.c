@@ -14,9 +14,15 @@ int main() {
     smtSpriteInitialiseFromFile("../../tests/assets/fx/sample.png", &sprite0);
     smtSpriteInitialiseFromFile("../../tests/assets/fx/sample2.png", &sprite1);
 
+    SMT_Rectangle_t sprite0Rect, sprite1Rect;
+    SMT_Rectangle_t sprite1SubRect;
+    smtRectangleInitialise(0.0f, 0.0f, 32.0f, 32.0f, &sprite0Rect);
+    smtRectangleInitialise(64.0f, 64.0f, 32.0f, 32.0f, &sprite1Rect);
+    smtRectangleInitialise(0.0f, 0.0f, 32.0f, 32.0f, &sprite1SubRect);
+
     while(!smtShouldClose()) {
-        smtDrawSprite(&sprite0);
-        smtDrawSprite(&sprite1);
+        smtDrawSprite(&sprite0, &sprite0Rect);
+        smtDrawSubSprite(&sprite1, &sprite1Rect, &sprite1SubRect);
         smtUpdate();
     }
 

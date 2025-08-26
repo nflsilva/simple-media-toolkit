@@ -19,7 +19,8 @@ typedef struct SMT_Renderer {
     SMT_Shader_t spriteShader;
     SMT_Batch_t spriteBatch;
     CUTILHashTable_t filePerTexture;
-    CVECMat4F_t projection;
+    CVECMat4F_t projectionMatrix;
+    CVECMat4F_t viewMatrix;
 
 } SMT_Renderer;
 

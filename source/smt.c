@@ -50,6 +50,11 @@ void smtUpdate() {
     smtWindowUpdate(&window);
 }
 
-void smtDrawSprite(SMT_Sprite_t* sprite) {
-    smtSpriteAddToBatch(&renderer.spriteBatch, sprite);
+void smtDrawSprite(struct SMT_Sprite* sprite, SMT_Rectangle_t* targetRectangle) {
+    SMT_Rectangle_t subRect = {0.0f, 0.0f, sprite->width, sprite->height};
+    smtSpriteAddToBatch(&renderer.spriteBatch, sprite, targetRectangle, &subRect);
+}
+
+void smtDrawSubSprite(struct SMT_Sprite* sprite, SMT_Rectangle_t* targetRectangle, SMT_Rectangle_t* subRectangle) {
+    smtSpriteAddToBatch(&renderer.spriteBatch, sprite, targetRectangle, subRectangle);
 }

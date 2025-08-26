@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "smt/rectangle.h"
 #include "smt/utils.h"
 
 struct SMT_Sprite;
@@ -39,6 +40,8 @@ int smtShouldClose();
 
 void smtUpdate();
 
-void smtDrawSprite(struct SMT_Sprite* sprite);
+void smtDrawSprite(struct SMT_Sprite* sprite, SMT_Rectangle_t* targetRectangle);
+
+void smtDrawSubSprite(struct SMT_Sprite* sprite, SMT_Rectangle_t* targetRectangle, SMT_Rectangle_t* subRectangle);
 
 #endif

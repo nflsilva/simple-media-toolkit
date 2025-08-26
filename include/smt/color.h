@@ -12,7 +12,7 @@
  */
 typedef struct SMT_Color {
     float red, green, blue, alpha;
-} SMT_Color;
+} SMT_Color_t;
 
 /*!
  * Initialises a new RGBA color.
@@ -23,6 +23,6 @@ typedef struct SMT_Color {
  * @return A pointer to the new color.
  * @warning Input values will be clipped to [`0.0`, `1.0`]
  */
-void smtColorInitialise(float r, float g, float b, float a, SMT_Color* color);
+void smtColorInitialise(float r, float g, float b, float a, SMT_Color_t* color);
 
 #endif

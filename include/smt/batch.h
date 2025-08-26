@@ -16,7 +16,7 @@
  */
 typedef struct SMT_BatchAttribute {
     GLuint glVBO;
-    unsigned int index, size, type;
+    unsigned int index, size, type, divisor;
     void* buffer;
     unsigned int bufferLength;
 } SMT_BatchAttribute_t;
@@ -45,7 +45,7 @@ void smtBatchUnbind(SMT_Batch_t* batch);
 
 void smtBatchResetBuffers(SMT_Batch_t* batch);
 
-int smtBatchAddAttribute(SMT_Batch_t* batch, unsigned int index, unsigned int size, int type);
+int smtBatchAddAttribute(SMT_Batch_t* batch, unsigned int index, unsigned int size, int type, int divisor);
 
 void smtBatchAddAttributeData(SMT_Batch_t* batch, unsigned int index, void* data);
 
